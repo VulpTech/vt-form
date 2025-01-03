@@ -1,0 +1,121 @@
+<script lang="ts" setup>
+import { ref, type HTMLAttributes, watch } from "vue";
+import { Search, X } from "lucide-vue-next";
+import { useDebounceFn } from "@vueuse/core";
+import { cn } from "@/lib/utils";
+import { type Option } from "@/types";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+
+type SearchOption = Omit<Option, "label"> & {
+    label?: string;
+    [key: string]: any;
+};
+
+const props = defineProps<{
+    placeholder?: string;
+    listQuery: (term: string) => Promise<SearchOption>[];
+    getQuery?: (value: string) => Promise<any>;
+    resultLabel?: string;
+    class?: HTMLAttributes["class"];
+}>();
+
+const model = defineModel<any>({ required: true });
+
+const open = ref(false);
+const searchTerm = ref("");
+const results = ref<SearchOption[]>([]);
+const loading = ref(false);
+
+const emits = defineEmits<{
+    focus: [];
+    blur: [];
+    clear: [];
+    input: [value: string | string[]];
+    change: [value: string | string[]];
+}>();
+
+const debouncedRequest = useDebounceFn(async () => {
+    return await props.listQuery(searchTerm.value);
+}, 200);
+
+async function runListQuery() {
+    if (searchTerm.value !== "") {
+        loading.value = true;
+        // @ts-ignore - nested Promise?
+        results.value = await debouncedRequest();
+        loading.value = false;
+    } else {
+        results.value = [];
+    }
+}
+
+async function handleSelect(result: SearchOption) {
+    if (!!props.getQuery) {
+        const item = await props.getQuery(result.value);
+        model.value = item;
+    } else {
+        model.value = result.value;
+    }
+    open.value = false;
+    searchTerm.value = "";
+    results.value = [];
+}
+
+function displayResult(result: SearchOption): string {
+    if (props.resultLabel) {
+        return result[props.resultLabel] || result.label || result.value;
+    } else {
+        return result.label || result.value;
+    }
+}
+
+watch(open, (newValue) => {
+    newValue ? emits("focus") : emits("blur");
+    if (!newValue) {
+        searchTerm.value = "";
+        results.value = [];
+    }
+});
+
+watch(model, (newValue) => {
+    emits("input", newValue);
+    emits("change", newValue);
+});
+</script>
+
+<template>
+    <Dialog v-model:open="open">
+        <div :class="cn('relative w-full items-center', props.class)">
+            <DialogTrigger as-child>
+                <Button variant="outline" :class="cn('justify-start w-full pr-10', props.class)">
+                    <Search class="size-6 text-muted-foreground -ml-2 pr-1" />
+                    <span :class="`overflow-x-hidden ${Object.keys(model).length === 0 ? 'text-muted-foreground' : ''}`">
+                        <template v-if="Object.keys(model).length > 0">{{ displayResult(model) }}</template>
+                        <template v-else>{{ placeholder || "Search" }}</template>
+                    </span>
+                </Button>
+            </DialogTrigger>
+            <span class="absolute end-0 inset-y-0 flex items-center justify-center">
+                <Button size="icon" variant="link" class="text-muted-foreground hover:text-foreground" @click="emits('clear')"><X class="size-4" /></Button>
+            </span>
+        </div>
+        <DialogContent>
+            <DialogHeader>Search</DialogHeader>
+            <div>
+                <Input type="search" placeholder="Search..." v-model="searchTerm" @input="runListQuery" autofocus />
+            </div>
+            <div v-if="searchTerm !== ''" class="flex flex-col gap-1">
+                <span v-if="loading">Loading...</span>
+                <template v-else-if="results">
+                    <div v-for="result in results" class="hover:bg-muted cursor-pointer p-2 rounded"
+                        @click="handleSelect(result)">
+                        {{ displayResult(result) }}
+                    </div>
+                    <span v-if="results.length === 0">No results found</span>
+                </template>
+            </div>
+        </DialogContent>
+    </Dialog>
+</template>

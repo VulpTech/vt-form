@@ -1,22 +1,36 @@
-# Template for building your own Vue.js + TypeScript component library
-A starter template for easily getting started with creating your own Vue.js component library with TypeScript.
+# VT Form
+Create a dynamic & reactive form with built-in validation by only defining a [Zod](https://zod.dev) schema.
 
-## CSS
-This template requires the consumer application to import the global CSS file from the component library (which is the default behaviour for Vite in library mode):
+## Install
 
-```typescript
-// main.ts
-import "vue-component-lib-template/vue-component-lib-template.css"
+```bash
+pnpm add vt-form
 ```
 
-For injecting component styling into each component instead of importing a global CSS file, I recommend using [`vite-plugin-libcss`](https://github.com/wxsms/vite-plugin-libcss):
+## Usage
+A simple example of creating a form containing a single text input.
 
-```typescript
-// vite.config.ts
-...
-import libCss from "vite-plugin-libcss";
+```vue
+<script lang="ts" setup>
+import { ref } from "vue";
+import * as z  from "zod";
+import { FormBuilder, schemaCreateEmptyObject, zodMetadata } from "vt-form";
 
-export default defineConfig({
-    plugins: [vue(), vueDevTools(), dts(), libCss()],
-...
+const schema = z.object({
+    text: zodMetadata(z.string(), {
+        label: "text",
+        description: "description",
+        type: "text",
+        initial: "",
+        placeholder: "placeholder",
+        tooltip: "tooltip",
+    }),
+});
+
+const data = ref(schemaCreateEmptyObject(schema));
+</script>
+
+<template>
+    <FormBuilder :schema="schema" v-model="data" />
+</template>
 ```

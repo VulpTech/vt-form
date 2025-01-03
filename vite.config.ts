@@ -4,14 +4,21 @@ import dts from "vite-plugin-dts";
 import { fileURLToPath, URL } from "node:url"
 import { resolve } from "path";
 import vueDevTools from "vite-plugin-vue-devtools";
+import autoprefixer from "autoprefixer";
+import tailwind from "tailwindcss";
 
 export default defineConfig({
+    css: {
+        postcss: {
+            plugins: [tailwind(), autoprefixer()],
+        },
+    },
     plugins: [vue(), vueDevTools(), dts()],
     build: {
         lib: {
             entry: resolve(__dirname, "src/index.ts"),
-            name: "vue-component-lib-template",
-            fileName: "vue-component-lib-template"
+            name: "vt-form",
+            fileName: "vt-form"
         },
         rollupOptions: {
             external: ["vue"],

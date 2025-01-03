@@ -1,11 +1,11 @@
 {
-    "name": "vue-component-lib-template",
+    "name": "vt-form",
     "private": true,
     "version": "1.0.0",
     "type": "module",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/jamiefeiss/vue-component-lib-template.git"
+        "url": "git+https://github.com/VulpTech/vt-form.git"
     },
     "keywords": [
         "vue3",
@@ -15,17 +15,17 @@
     "files": [
         "dist"
     ],
-    "main": "./dist/vue-component-lib-template.umd.cjs",
-    "module": "./dist/vue-component-lib-template.js",
+    "main": "./dist/vt-form.umd.cjs",
+    "module": "./dist/vt-form.js",
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
-            "import": "./dist/vue-component-lib-template.js",
-            "require": "./dist/vue-component-lib-template.umd.cjs"
+            "import": "./dist/vt-form.js",
+            "require": "./dist/vt-form.umd.cjs"
         },
-        "./vue-component-lib-template.css": {
-            "import": "./dist/vue-component-lib-template.css",
-            "require": "./dist/vue-component-lib-template.css"
+        "./vt-form.css": {
+            "import": "./dist/vt-form.css",
+            "require": "./dist/vt-form.css"
         }
     },
     "types": "./dist/index.d.ts",
@@ -39,19 +39,34 @@
         "preinstall": "npx only-allow pnpm"
     },
     "peerDependencies": {
-        "vue": "^3.0.0"
+        "vue": "^3.0.0",
+        "zod": "^3.24.1"
     },
     "devDependencies": {
         "@types/jsdom": "^21.1.7",
         "@types/node": "^22.10.2",
         "@vitejs/plugin-vue": "^5.2.1",
         "@vue/test-utils": "^2.4.6",
+        "autoprefixer": "^10.4.20",
         "jsdom": "^25.0.1",
+        "tailwindcss": "^3.4.17",
         "typescript": "~5.6.3",
         "vite": "^6.0.3",
         "vite-plugin-dts": "^4.3.0",
         "vite-plugin-vue-devtools": "^7.6.8",
         "vitest": "^2.1.5",
         "vue-tsc": "^2.1.10"
+    },
+    "dependencies": {
+        "@internationalized/date": "^3.6.0",
+        "@vee-validate/zod": "^4.14.7",
+        "@vueuse/core": "^12.0.0",
+        "class-variance-authority": "^0.7.1",
+        "clsx": "^2.1.1",
+        "lucide-vue-next": "^0.468.0",
+        "radix-vue": "^1.9.11",
+        "tailwind-merge": "^2.5.5",
+        "tailwindcss-animate": "^1.0.7",
+        "vee-validate": "^4.14.7"
     }
 }
