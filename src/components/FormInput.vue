@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import * as z from "zod";
-import { useField } from "vee-validate";
-import { toTypedSchema } from "@vee-validate/zod";
+// import { useField } from "vee-validate";
+// import { toTypedSchema } from "@vee-validate/zod";
 import { CircleHelp } from "lucide-vue-next";
 import { InputSchema } from "@/types";
 import { getZodSchema } from "@/form";
@@ -19,6 +19,7 @@ import FormInputGroup from "@/components/FormInputGroup.vue";
 import DateInput from "@/components/DateInput.vue";
 import NumberInput from "@/components/NumberInput.vue";
 import FormRange from "@/components/FormRange.vue";
+import { useVtField } from "@/composables/useVtField";
 
 const props = defineProps<{
     fieldKey: string;
@@ -29,8 +30,8 @@ const fieldUnwrapped = props.field.unwrap();
 
 // @ts-ignore
 const model = defineModel<z.infer<typeof fieldUnwrapped>>({ required: true });
-const { value, errorMessage, meta, validate, resetField } = useField(props.fieldKey, toTypedSchema(props.field.unwrap()), { syncVModel: true });
-
+//const { value, errorMessage, meta, validate, resetField } = useField(props.fieldKey, toTypedSchema(props.field.unwrap()), { syncVModel: true });
+ const {value, errorMessage, meta, validate, resetField } = useVtField(props.field.unwrap())
 const fieldDef = getZodSchema(props.field)._def;
 
 const fieldMeta = props.field.metadata;

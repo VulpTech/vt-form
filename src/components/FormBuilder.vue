@@ -10,11 +10,14 @@ const props = defineProps<{
     class?: HTMLAttributes["class"];
 }>();
 
-const model = defineModel<z.infer<typeof props.schema>>({ required: true });
+const model = defineModel<z.infer<typeof props.schema>|undefined>({ required: true });
 </script>
 
 <template>
-    <div :class="cn('', props.class)">
+    <template v-if="!model">
+        <span>Invalid form model.</span>
+    </template>
+    <div v-else :class="cn('', props.class)">
         <template v-for="(field, fieldKey) in props.schema.shape" :key="fieldKey">
             <div
                 v-if="field.metadata"

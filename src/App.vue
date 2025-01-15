@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { ref } from "vue";
-import * as z  from "zod";
-import { schemaCreateEmptyObject, zodMetadata } from "@/form";
+import * as z from "zod";
+import { ref } from 'vue';
+import useVtForm from "@/composables/useVtForm";
+import { zodMetadata } from "@/form";
 import FormBuilder from "@/components/FormBuilder.vue";
-
+import { Button } from "@/components/ui/button";
 const schema = z.object({
     text: zodMetadata(z.string(), {
         label: "text",
@@ -13,13 +14,21 @@ const schema = z.object({
         placeholder: "placeholder",
         tooltip: "tooltip",
     }),
+    textOpt: zodMetadata(z.string().optional(), {
+        label: "text",
+        description: "description",
+        type: "text",
+        initial: "x",
+        placeholder: "placeholder",
+        tooltip: "tooltip",
+    }),
     select: zodMetadata(z.string().array(), {
         label: "select",
         description: "description",
         type: "select",
         placeholder: "placeholder",
         initial: [],
-        options: [{label: "label 1", value: "value 1"}, {label: "label 2", value: "value 2"}],
+        options: [{ label: "label 1", value: "value 1" }, { label: "label 2", value: "value 2" }],
         tooltip: "tooltip"
     }),
     textarea: zodMetadata(z.string(), {
@@ -32,10 +41,10 @@ const schema = z.object({
         tooltip: "tooltip",
     }),
     object: zodMetadata(z.object({
-        literal: zodMetadata(z.literal("literal"), {
-            type: "hidden",
-            initial: "literal",
-        }),
+        // literal: zodMetadata(z.literal("literal"), {
+        //     type: "hidden",
+        //     initial: "literal",
+        // }),
         url: zodMetadata(z.string().url(), {
             label: "url",
             description: "description",
@@ -118,12 +127,21 @@ const schema = z.object({
     }),
 });
 
-const data = ref(schemaCreateEmptyObject(schema));
+const { data, validity, error, isValid } = useVtForm(schema)
+
+const d2 = ref(undefined)
 </script>
 
 <template>
     <div class="p-4">
+        <p>error:{{ error }}</p>
         <FormBuilder v-model="data" :schema="schema" class="grid grid-cols-2 gap-3" />
-        <pre>{{ data }}</pre>
+
+        <FormBuilder v-model="d2" :schema="schema" class="grid grid-cols-2 gap-3" />
+        <Button :disabled="!isValid">Submit</Button>
+        <p>isValid: {{ isValid }}</p>
+        <pre>{{ schema.shape }}</pre>
+        <pre>validity:{{ validity }}</pre>
+        <pre>data:{{ data }}</pre>
     </div>
 </template>
