@@ -24,14 +24,15 @@ import { useVtField } from "@/composables/useVtField";
 const props = defineProps<{
     fieldKey: string;
     field: InputSchema;
+    disabled?: boolean;
 }>();
 
 const fieldUnwrapped = props.field.unwrap();
 
 // @ts-ignore
 const model = defineModel<z.infer<typeof fieldUnwrapped>>({ required: true });
-//const { value, errorMessage, meta, validate, resetField } = useField(props.fieldKey, toTypedSchema(props.field.unwrap()), { syncVModel: true });
- const {value, errorMessage, meta, validate, resetField } = useVtField(props.field.unwrap())
+// const { value, errorMessage, meta, validate, resetField } = useField(props.fieldKey, toTypedSchema(props.field.unwrap()), { syncVModel: true });
+ const {value, errorMessage, meta, validate, resetField } = useVtField(props.field.unwrap(), model)
 const fieldDef = getZodSchema(props.field)._def;
 
 const fieldMeta = props.field.metadata;
@@ -137,6 +138,7 @@ const multiple = computed(() => {
                 @update:checked="(checked: boolean) => (fieldMeta.type === 'switch' || fieldMeta.type === 'checkbox') ? (value = checked ? fieldMeta.trueValue : fieldMeta.falseValue) : undefined"
                 @blur="validate"
                 @clear="resetField({ value: fieldMeta.initial })"
+                :disabled="disabled"
             />
             <Label v-if="fieldMeta.type === 'switch' && fieldMeta.falseLabel">{{ fieldMeta.falseLabel }}</Label>
         </div>

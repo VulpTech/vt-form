@@ -22,6 +22,15 @@ export const optionSchema = z.object({
 });
 export interface Option extends z.infer<typeof optionSchema> { };
 
+export const externalInputSchema = z.object({
+    label: z.string().optional(),
+    description: z.string().optional(),
+    placeholder: z.string().optional(),
+    style: z.string().optional(),
+    class: z.string().optional(),
+    tooltip: z.string().optional(),
+})
+
 export const inputMetaSchema = z.discriminatedUnion("type", [
     z.object({
         type: z.enum(["text", "url", "password", "email", "date", "tel", "textarea"]),
@@ -73,17 +82,37 @@ export const inputMetaSchema = z.discriminatedUnion("type", [
         type: z.literal("hidden"),
         initial: z.any(),
     })
-]).and(z.object({
-    label: z.string().optional(),
-    description: z.string().optional(),
-    placeholder: z.string().optional(),
-    style: z.string().optional(),
-    class: z.string().optional(),
-    tooltip: z.string().optional(),
-}));
+]).and(externalInputSchema);
 export type InputMeta = z.infer<typeof inputMetaSchema>;
 // export const sectionMetaSchema = z.object({
 //     class: z.string().optional(),
 //     style: z.string().optional(),
 // });
 // export interface SectionMeta extends z.infer<typeof sectionMetaSchema> { };
+export type ExternalInputProps = {
+    id: string;
+    type: string ;
+    placeholder?: string ;
+    class?: string;
+    options?: Option[];
+    multiple?: boolean;
+    fieldKey?: string;
+    field?: z.infer<InputSchema>;
+    listQuery?: ()=>{};
+    getQuery?: ()=>{};
+    resultLabel?: string;
+    checked?: boolean | 'indeterminate';
+    min?: number;
+    max?: number;
+    minlength?: number;
+    maxlength?: number;
+    disabled?: boolean;
+
+    updateChecked?:(checked?:boolean)=>boolean|undefined;
+    onBlur:()=>{};
+    onClear:()=>{};
+    // @update:checked="(checked: boolean) => (fieldMeta.type === 'switch' || fieldMeta.type === 'checkbox') ? (value = checked ? fieldMeta.trueValue : fieldMeta.falseValue) : undefined"
+    // @blur="validate"
+    // @clear="resetField({ value: fieldMeta.initial })"
+    
+}

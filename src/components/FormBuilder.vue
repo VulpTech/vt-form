@@ -7,6 +7,7 @@ import FormInput from "@/components/FormInput.vue";
 
 const props = defineProps<{
     schema: FormSchema;
+    disabled?: boolean;
     class?: HTMLAttributes["class"];
 }>();
 
@@ -24,7 +25,7 @@ const model = defineModel<z.infer<typeof props.schema>|undefined>({ required: tr
                 :class="field.metadata?.class"
                 :style="field.metadata?.style"
             >
-                <FormInput :fieldKey="(fieldKey as string)" :field="field" v-model="model[fieldKey]" />
+                <FormInput :fieldKey="(fieldKey as string)" :field="field" v-model="model[fieldKey]" :disabled="disabled"/>
             </div>
         </template>
     </div>

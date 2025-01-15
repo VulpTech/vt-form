@@ -129,7 +129,7 @@ const schema = z.object({
 
 const { data, validity, error, isValid } = useVtForm(schema)
 
-const d2 = ref(undefined)
+// const d2 = ref(undefined)
 </script>
 
 <template>
@@ -137,7 +137,7 @@ const d2 = ref(undefined)
         <p>error:{{ error }}</p>
         <FormBuilder v-model="data" :schema="schema" class="grid grid-cols-2 gap-3" />
 
-        <FormBuilder v-model="d2" :schema="schema" class="grid grid-cols-2 gap-3" />
+        <!-- <FormBuilder v-model="d2" :schema="schema" class="grid grid-cols-2 gap-3" /> -->
         <Button :disabled="!isValid">Submit</Button>
         <p>isValid: {{ isValid }}</p>
         <pre>{{ schema.shape }}</pre>
