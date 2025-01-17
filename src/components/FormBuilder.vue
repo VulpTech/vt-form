@@ -11,7 +11,7 @@ const props = defineProps<{
     class?: HTMLAttributes["class"];
 }>();
 
-const model = defineModel<z.infer<typeof props.schema>|undefined>({ required: true });
+const model = defineModel<z.infer<typeof props.schema> | undefined>({ required: true });
 </script>
 
 <template>

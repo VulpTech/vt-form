@@ -34,7 +34,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-    <Popover>
+    <Popover @update:open="open => open ? emit('focus') : emit('blur')">
         <div :class="cn('relative w-full items-center', props.class)">
             <PopoverTrigger as-child>
                 <Button variant="outline" :class="cn(

@@ -1,36 +1,37 @@
-import * as z from "zod"
-import { ref, computed } from 'vue'
+import { ref, computed } from "vue";
+import * as z from "zod";
 import { schemaCreateEmptyObject } from "@/form";
+import { FormSchema } from "@/types";
 
-export default function useVtForm<T extends z.AnyZodObject>(schema:T) {
-    const error = ref<string|null>(null)
-    const data =ref<z.infer<typeof schema>|undefined>()
-    try{
-        data.value = schemaCreateEmptyObject(schema);
-    }
-    catch{
-        error.value = "Invalid form schema"
-    }
-    const isValidating = ref<boolean>(false)
-   
-    const validity = computed(()=>{
-        isValidating.value = true 
-        const errors = schema.safeParse(data.value).error
-        isValidating.value = false 
-        return errors
-    })
+export default function useVtForm<T extends FormSchema>(schema: T) {
+    const error = ref<string | null>(null);
+    const formData = ref<z.infer<typeof schema> | undefined>();
+    const isValidating = ref<boolean>(false);
 
-    const isValid = computed(()=>{
-        return schema.safeParse(data.value).success
-    })
-
-    const resetValues= ()=>{
-        data.value = schemaCreateEmptyObject(schema);
+    try {
+        formData.value = schemaCreateEmptyObject(schema);
     }
-    
+    catch {
+        error.value = "Invalid form schema";
+    }
+
+    const parsed = computed(() => {
+        isValidating.value = true;
+        const result = schema.safeParse(formData.value)
+        isValidating.value = false;
+        return result;
+    });
+
+    const validity = computed(() => parsed.value.error);
+
+    const isValid = computed(() => parsed.value.success);
+
+    const resetValues = () => {
+        formData.value = schemaCreateEmptyObject(schema);
+    }
+
     return {
-
-        data,
+        formData,
         isValidating,
         validity,
         error,

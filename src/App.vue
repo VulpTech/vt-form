@@ -1,28 +1,29 @@
 <script lang="ts" setup>
 import * as z from "zod";
-import { ref } from 'vue';
 import useVtForm from "@/composables/useVtForm";
-import { zodMetadata } from "@/form";
+import { formField } from "@/form";
 import FormBuilder from "@/components/FormBuilder.vue";
 import { Button } from "@/components/ui/button";
+
 const schema = z.object({
-    text: zodMetadata(z.string(), {
+    text: formField(z.string(), {
         label: "text",
         description: "description",
         type: "text",
-        initial: "",
+        initial: "initial",
+        resetValue: "",
         placeholder: "placeholder",
         tooltip: "tooltip",
     }),
-    textOpt: zodMetadata(z.string().optional(), {
-        label: "text",
+    textOpt: formField(z.string().optional(), {
+        label: "text optional",
         description: "description",
         type: "text",
         initial: "x",
         placeholder: "placeholder",
         tooltip: "tooltip",
     }),
-    select: zodMetadata(z.string().array(), {
+    select: formField(z.string().array(), {
         label: "select",
         description: "description",
         type: "select",
@@ -31,7 +32,7 @@ const schema = z.object({
         options: [{ label: "label 1", value: "value 1" }, { label: "label 2", value: "value 2" }],
         tooltip: "tooltip"
     }),
-    textarea: zodMetadata(z.string(), {
+    textarea: formField(z.string(), {
         label: "textarea",
         description: "description",
         type: "textarea",
@@ -40,12 +41,12 @@ const schema = z.object({
         class: "col-span-full",
         tooltip: "tooltip",
     }),
-    object: zodMetadata(z.object({
-        // literal: zodMetadata(z.literal("literal"), {
+    object: formField(z.object({
+        // literal: formField(z.literal("literal"), {
         //     type: "hidden",
         //     initial: "literal",
         // }),
-        url: zodMetadata(z.string().url(), {
+        url: formField(z.string().url(), {
             label: "url",
             description: "description",
             type: "url",
@@ -53,7 +54,7 @@ const schema = z.object({
             placeholder: "placeholder",
             tooltip: "tooltip",
         }),
-        checkbox: zodMetadata(z.boolean(), {
+        checkbox: formField(z.boolean(), {
             label: "checkbox",
             description: "description",
             type: "checkbox",
@@ -66,12 +67,15 @@ const schema = z.object({
         label: "object",
         description: "description",
         type: "group",
-        initial: {},
+        initial: {
+            url: "",
+            checkbox: false,
+        },
         tooltip: "tooltip",
         class: "col-span-full",
     }),
-    list: zodMetadata(z.object({
-        key: zodMetadata(z.string(), {
+    list: formField(z.object({
+        key: formField(z.string(), {
             label: "key",
             description: "description",
             type: "text",
@@ -89,21 +93,21 @@ const schema = z.object({
         },
         tooltip: "tooltip"
     }),
-    number: zodMetadata(z.number().int(), {
+    number: formField(z.number().int(), {
         label: "number",
         description: "description",
         type: "number",
         initial: 0,
         tooltip: "tooltip",
     }),
-    date: zodMetadata(z.string().date(), {
+    date: formField(z.string().date(), {
         label: "date",
         description: "description",
         type: "date",
         initial: "",
         tooltip: "tooltip",
     }),
-    password: zodMetadata(z.string(), {
+    password: formField(z.string(), {
         label: "password",
         description: "description",
         type: "password",
@@ -111,14 +115,14 @@ const schema = z.object({
         initial: "",
         tooltip: "tooltip",
     }),
-    range: zodMetadata(z.number().int().min(1).max(5), {
+    range: formField(z.number().int().min(1).max(5), {
         label: "range",
         description: "description",
         type: "range",
         initial: 1,
         tooltip: "tooltip",
     }),
-    multirange: zodMetadata(z.number().int().array(), {
+    multirange: formField(z.number().int().array(), {
         label: "multirange",
         description: "description",
         type: "range",
@@ -127,7 +131,7 @@ const schema = z.object({
     }),
 });
 
-const { data, validity, error, isValid } = useVtForm(schema)
+const { formData, validity, error, isValid } = useVtForm(schema);
 
 // const d2 = ref(undefined)
 </script>
@@ -135,13 +139,13 @@ const { data, validity, error, isValid } = useVtForm(schema)
 <template>
     <div class="p-4">
         <p>error:{{ error }}</p>
-        <FormBuilder v-model="data" :schema="schema" class="grid grid-cols-2 gap-3" />
+        <FormBuilder v-model="formData" :schema="schema" class="grid grid-cols-2 gap-3" />
 
         <!-- <FormBuilder v-model="d2" :schema="schema" class="grid grid-cols-2 gap-3" /> -->
         <Button :disabled="!isValid">Submit</Button>
         <p>isValid: {{ isValid }}</p>
         <pre>{{ schema.shape }}</pre>
         <pre>validity:{{ validity }}</pre>
-        <pre>data:{{ data }}</pre>
+        <pre>formData: {{ formData }}</pre>
     </div>
 </template>

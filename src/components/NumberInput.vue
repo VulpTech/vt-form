@@ -33,12 +33,11 @@ const emit = defineEmits<{
         v-model="model"
         :defaultValue="props.defaultValue"
         :format-options="{ signDisplay: props.showSign ? 'exceptZero' : undefined }"
-        :class="cn('', props.class)"
     >
-        <div :class="cn('relative w-full items-center', props.class)">
-            <NumberFieldContent>
+        <div class="relative w-full items-center">
+            <NumberFieldContent >
                 <NumberFieldDecrement />
-                <NumberFieldInput class="!pr-14" />
+                <NumberFieldInput :class="cn('!pr-14', props.class)" />
                 <NumberFieldIncrement class="mr-10" />
             </NumberFieldContent>
             <span class="absolute end-0 inset-y-0 flex items-center justify-center">

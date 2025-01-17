@@ -14,10 +14,10 @@ A simple example of creating a form containing a single text input.
 <script lang="ts" setup>
 import { ref } from "vue";
 import * as z  from "zod";
-import { FormBuilder, schemaCreateEmptyObject, zodMetadata } from "vt-form";
+import { FormBuilder, schemaCreateEmptyObject, formField } from "vt-form";
 
 const schema = z.object({
-    text: zodMetadata(z.string(), {
+    text: formField(z.string(), {
         label: "text",
         description: "description",
         type: "text",
@@ -27,10 +27,10 @@ const schema = z.object({
     }),
 });
 
-const data = ref(schemaCreateEmptyObject(schema));
+const { formData, validity, error, isValid } = useVtForm(schema);
 </script>
 
 <template>
-    <FormBuilder :schema="schema" v-model="data" />
+    <FormBuilder :schema="schema" v-model="formData" />
 </template>
 ```
