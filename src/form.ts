@@ -1,11 +1,11 @@
 import * as z from "zod";
-import { FormSchema, InputMeta, InputSchema, ZodMetadata } from "@/types";
+import { type FormSchema, type InputMeta, type InputSchema, ZodMetadata } from "@/types";
 
-export function zodMetadata<T extends z.ZodTypeAny, M extends InputMeta>(
+export function formField<T extends z.ZodTypeAny, M extends InputMeta>(
     schema: T,
     metadata: M
 ): ZodMetadata<T, M> {
-    return new ZodMetadata(schema.refine(() => true)._def, metadata)
+    return new ZodMetadata(schema.refine(() => true)._def, metadata);
 }
 
 export function schemaCreateEmptyObject<T extends FormSchema>(schema: T): z.infer<T> {

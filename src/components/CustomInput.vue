@@ -45,13 +45,13 @@ function handleBlur(e: FocusEvent) {
 </script>
 
 <template>
-    <div :class="cn('relative w-full items-center', props.class)">
+    <div class="relative w-full items-center">
         <Input
             :id="props.id"
             :type="props.type === 'password' ? (showPassword ? 'text' : 'password') : props.type"
             v-model="model"
             :placeholder="placeholder"
-            :class="props.type === 'password' ? 'pr-20' : 'pr-10'"
+            :class="cn(props.type === 'password' ? 'pr-20' : 'pr-10', props.class)"
             @focus="emit('focus')"
             @blur="handleBlur"
             ref="inputRef"

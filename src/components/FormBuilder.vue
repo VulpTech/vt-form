@@ -7,21 +7,25 @@ import FormInput from "@/components/FormInput.vue";
 
 const props = defineProps<{
     schema: FormSchema;
+    disabled?: boolean;
     class?: HTMLAttributes["class"];
 }>();
 
-const model = defineModel<z.infer<typeof props.schema>>({ required: true });
+const model = defineModel<z.infer<typeof props.schema> | undefined>({ required: true });
 </script>
 
 <template>
-    <div :class="cn('', props.class)">
+    <template v-if="!model">
+        <span>Invalid form model.</span>
+    </template>
+    <div v-else :class="cn('', props.class)">
         <template v-for="(field, fieldKey) in props.schema.shape" :key="fieldKey">
             <div
                 v-if="field.metadata"
                 :class="field.metadata?.class"
                 :style="field.metadata?.style"
             >
-                <FormInput :fieldKey="(fieldKey as string)" :field="field" v-model="model[fieldKey]" />
+                <FormInput :fieldKey="(fieldKey as string)" :field="field" v-model="model[fieldKey]" :disabled="disabled"/>
             </div>
         </template>
     </div>
