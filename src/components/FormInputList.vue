@@ -31,7 +31,7 @@ function remove(index: number) {
 
 <template>
     <Card>
-        <CardContent class="flex flex-col gap-4 p-6">
+        <CardContent v-if="model.length > 0" class="flex flex-col gap-4 p-6">
             <div v-for="(_, index) in model" :key="index" class="flex flex-row gap-2">
                 <FormInputGroup v-model="model[index]" :field="fieldSchema.element" />
                 <div v-if="!fieldSchema._def.exactLength" class="w-6 flex">

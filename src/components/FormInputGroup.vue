@@ -3,6 +3,7 @@ import * as z from "zod";
 import { getZodSchema } from "@/form";
 import FormInput from "@/components/FormInput.vue";
 import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { InputSchema } from "@/types";
 
 type ObjectGroupSchema = z.ZodObject<{[key: string]: InputSchema}>;
@@ -20,7 +21,7 @@ const shape = getZodSchema(props.field).shape;
 <template>
     <Card class="grow">
         <CardContent class="p-6">
-            <div class="grid grid-cols-2 flex-grow gap-2">
+            <div :class="cn('grid grid-cols-2 gap-2', 'metadata' in props.field && props.field.metadata.type === 'group' ? props.field.metadata.groupClass : undefined)">
                 <template v-for="(f, k) in shape" :key="k">
                     <div
                         v-if="f.metadata.type !== 'hidden'"

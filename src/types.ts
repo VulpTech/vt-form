@@ -38,9 +38,10 @@ export const inputMetaSchema = z.discriminatedUnion("type", [
         resetValue: z.string().optional(),
     }),
     z.object({
-        type: z.enum(["group"]),
+        type: z.literal("group"),
         initial: z.any(),
         resetValue: z.any().optional(),
+        groupClass: z.string().optional(),
     }),
     z.object({
         type: z.literal("number"),

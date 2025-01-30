@@ -72,7 +72,8 @@ const schema = z.object({
             checkbox: false,
         },
         tooltip: "tooltip",
-        class: "col-span-full",
+        class: "col-span-full", // self
+        groupClass: "flex flex-col", // children container
     }),
     list: formField(z.object({
         key: formField(z.string(), {
