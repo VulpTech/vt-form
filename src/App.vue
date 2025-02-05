@@ -4,6 +4,23 @@ import useVtForm from "@/composables/useVtForm";
 import { formField } from "@/form";
 import FormBuilder from "@/components/FormBuilder.vue";
 import { Button } from "@/components/ui/button";
+import { externalInputSchema, type InputMeta, type Registry } from "@/types";
+import MyComponent from "@/components/MyComponent.vue";
+
+const customUnion = z.discriminatedUnion("type", [
+    z.object({
+        type: z.literal("custom"),
+        initial: z.string(),
+        resetValue: z.string().optional(),
+    }),
+    z.object({
+        type: z.literal("custom2"),
+        initial: z.string(),
+        resetValue: z.string().optional(),
+    }),
+]).and(externalInputSchema);
+
+type CustomInputMeta = InputMeta | z.infer<typeof customUnion>;
 
 const schema = z.object({
     text: formField(z.string(), {
@@ -30,7 +47,8 @@ const schema = z.object({
         placeholder: "placeholder",
         initial: [],
         options: [{ label: "label 1", value: "value 1" }, { label: "label 2", value: "value 2" }],
-        tooltip: "tooltip"
+        tooltip: "tooltip",
+        multiple: true,
     }),
     textarea: formField(z.string(), {
         label: "textarea",
@@ -94,11 +112,11 @@ const schema = z.object({
         },
         tooltip: "tooltip"
     }),
-    number: formField(z.number().int(), {
+    number: formField(z.number().int().min(1).max(5), {
         label: "number",
         description: "description",
         type: "number",
-        initial: 0,
+        initial: 1,
         tooltip: "tooltip",
     }),
     date: formField(z.string().date(), {
@@ -130,19 +148,31 @@ const schema = z.object({
         initial: [0, 100],
         tooltip: "tooltip",
     }),
+    custom: formField<z.ZodTypeAny, CustomInputMeta>(z.string(), {
+        label: "custom",
+        description: "description",
+        type: "custom",
+        initial: "title",
+        tooltip: "tooltip",
+    }),
 });
 
-const { formData, validity, error, isValid } = useVtForm(schema);
+const registry: Registry = {
+    custom: {
+        component: MyComponent,
+        props: {
+            title: (def, meta, model) => model.value
+        }
+    }
+};
 
-// const d2 = ref(undefined)
+const { formData, validity, error, isValid } = useVtForm(schema);
 </script>
 
 <template>
     <div class="p-4">
         <p>error:{{ error }}</p>
-        <FormBuilder v-model="formData" :schema="schema" class="grid grid-cols-2 gap-3" />
-
-        <!-- <FormBuilder v-model="d2" :schema="schema" class="grid grid-cols-2 gap-3" /> -->
+        <FormBuilder v-model="formData" :schema="schema" :registry="registry" class="grid grid-cols-2 gap-3" />
         <Button :disabled="!isValid">Submit</Button>
         <p>isValid: {{ isValid }}</p>
         <pre>{{ schema.shape }}</pre>

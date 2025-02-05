@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import * as z from "zod";
 import { Trash } from "lucide-vue-next";
-import { InputSchema } from "@/types";
+import type { InputSchema, Registry } from "@/types";
 import { getZodSchema } from "@/form";
 import FormInputGroup from "@/components/FormInputGroup.vue";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 const props = defineProps<{
     // fieldKey: string;
     field: InputSchema<z.ZodArray<z.AnyZodObject>>;
+    registry?: Registry;
 }>();
 
 const fieldUnwrapped = props.field.unwrap();
@@ -33,7 +34,7 @@ function remove(index: number) {
     <Card>
         <CardContent v-if="model.length > 0" class="flex flex-col gap-4 p-6">
             <div v-for="(_, index) in model" :key="index" class="flex flex-row gap-2">
-                <FormInputGroup v-model="model[index]" :field="fieldSchema.element" />
+                <FormInputGroup v-model="model[index]" :field="fieldSchema.element" :registry="props.registry" />
                 <div v-if="!fieldSchema._def.exactLength" class="w-6 flex">
                     <Button
                         v-if="fieldMeta.initial.length === 0 || index > 0"

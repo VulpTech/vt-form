@@ -2,28 +2,19 @@
 import { computed, watch } from "vue";
 import * as z from "zod";
 import { CircleHelp } from "lucide-vue-next";
-import { InputSchema } from "@/types";
+import type { InputSchema, Registry } from "@/types";
 import { getZodSchema } from "@/form";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Switch } from "@/components/ui/switch";
 import CustomTooltip from "@/components/CustomTooltip.vue";
-import CustomInput from "@/components/CustomInput.vue";
-import ComboSelect from "@/components/ComboSelect.vue";
-import SearchInput from "@/components/SearchInput.vue";
-import FormInputList from "@/components/FormInputList.vue";
-import FormInputGroup from "@/components/FormInputGroup.vue";
-import DateInput from "@/components/DateInput.vue";
-import NumberInput from "@/components/NumberInput.vue";
-import FormRange from "@/components/FormRange.vue";
 import { useVtField } from "@/composables/useVtField";
 import { cn } from "@/lib/utils";
+import { defaultRegistry } from "@/registry";
 
 const props = defineProps<{
     fieldKey: string;
     field: InputSchema;
     disabled?: boolean;
+    registry?: Registry;
 }>();
 
 const fieldUnwrapped = props.field.unwrap();
@@ -34,36 +25,33 @@ const fieldDef = getZodSchema(props.field)._def;
 
 const fieldMeta = props.field.metadata;
 
-const inputComponent = computed(() => {
-    switch (fieldMeta.type) {
-        case "text":
-        case "url":
-        case "tel":
-        case "email":
-        case "password":
-            return CustomInput;
-        case "textarea":
-            return Textarea;
-        case "checkbox":
-            return Checkbox;
-        case "switch":
-            return Switch
-        case "select":
-            return ComboSelect;
-        case "add":
-            return FormInputList;
-        case "search":
-            return SearchInput;
-        case "group":
-            return FormInputGroup;
-        case "date":
-            return DateInput;
-        case "number":
-            return NumberInput;
-        case "range":
-            return FormRange;
-        default:
-            return CustomInput;
+const mergedRegistry = computed(() => {
+    return {...defaultRegistry, ...props.registry};
+})
+
+const registryItem = computed(() => {
+    return mergedRegistry.value[fieldMeta.type] || mergedRegistry.value.default;
+});
+
+const computedProps = computed(() => {
+    if (registryItem.value.props) {
+        return Object.entries(registryItem.value.props).reduce((obj, [key, fn]) => {
+            obj[key] = fn(fieldDef, fieldMeta, model, props.field, props.fieldKey);
+            return obj;
+        }, {} as Record<string, any>);
+    } else {
+        return {};
+    }
+});
+
+const computedEvents = computed(() => {
+    if (registryItem.value.events) {
+        return Object.entries(registryItem.value.events).reduce((obj, [key, fn]) => {
+            obj[key] = fn(fieldDef, fieldMeta, model, props.field, props.fieldKey);
+            return obj;
+        }, {} as Record<string, any>);
+    } else {
+        return {};
     }
 });
 
@@ -83,28 +71,17 @@ watch(model, () => {
                 </CustomTooltip>
             </div>
             <!-- @vue-ignore -->
-            <component :is="inputComponent"
+            <component :is="registryItem.component"
                 :id="props.fieldKey"
-                :type="['text', 'url', 'tel', 'email', 'password'].includes(fieldMeta.type) ? fieldMeta.type : undefined"
-                :placeholder="fieldMeta.placeholder"
+                v-bind="computedProps"
+                v-on="computedEvents"
                 v-model="model"
+                :placeholder="fieldMeta.placeholder"
                 :class="errorMessage ? 'border-destructive' : ''"
-                :options="fieldMeta.type === 'select' ? fieldMeta.options : undefined"
-                :multiple="fieldMeta.type === 'select' ? fieldMeta.multiple : undefined"
-                :fieldKey="['add', 'group'].includes(fieldMeta.type) ? props.fieldKey : undefined"
-                :field="['add', 'group'].includes(fieldMeta.type) ? props.field : undefined"
-                :listQuery="fieldMeta.type === 'search' ? fieldMeta.listQuery || undefined : undefined"
-                :getQuery="fieldMeta.type === 'search' ? fieldMeta.getQuery || undefined : undefined"
-                :resultLabel="fieldMeta.type === 'search' ? fieldMeta.resultLabel || undefined : undefined"
-                :checked="(fieldMeta.type === 'switch' || fieldMeta.type === 'checkbox') ? model === fieldMeta.trueValue : undefined"
-                :min="fieldDef.checks?.find(c => c.kind === 'min')?.value"
-                :max="fieldDef.checks?.find(c => c.kind === 'max')?.value"
-                :minlength="fieldDef.checks?.find(c => c.kind === 'min')?.value"
-                :maxlength="fieldDef.checks?.find(c => c.kind === 'max')?.value"
-                @update:checked="(checked: boolean) => (fieldMeta.type === 'switch' || fieldMeta.type === 'checkbox') ? (model = checked ? fieldMeta.trueValue : fieldMeta.falseValue) : undefined"
+                :disabled="disabled"
+                :registry="props.registry"
                 @blur="validate"
                 @clear="resetField"
-                :disabled="disabled"
             />
             <Label v-if="fieldMeta.type === 'switch' && fieldMeta.falseLabel">{{ fieldMeta.falseLabel }}</Label>
         </div>

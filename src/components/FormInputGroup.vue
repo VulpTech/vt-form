@@ -4,13 +4,14 @@ import { getZodSchema } from "@/form";
 import FormInput from "@/components/FormInput.vue";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { InputSchema } from "@/types";
+import type { InputSchema, Registry } from "@/types";
 
 type ObjectGroupSchema = z.ZodObject<{[key: string]: InputSchema}>;
 
 const props = defineProps<{
     // fieldKey: string;
     field: InputSchema<ObjectGroupSchema> | ObjectGroupSchema;
+    registry?: Registry;
 }>();
 
 const model = defineModel<z.infer<typeof props.field>>({ required: true });
@@ -32,6 +33,7 @@ const shape = getZodSchema(props.field).shape;
                             :fieldKey="(k as string)"
                             :field="f"
                             v-model="model[k]"
+                            :registry="props.registry"
                         />
                     </div>
                 </template>
