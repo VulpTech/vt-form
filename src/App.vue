@@ -1,29 +1,14 @@
 <script lang="ts" setup>
 import * as z from "zod";
-import useVtForm from "@/composables/useVtForm";
-import { formField } from "@/form";
-import FormBuilder from "@/components/FormBuilder.vue";
-import { Button } from "@/components/ui/button";
-import { externalInputSchema, type InputMeta, type Registry } from "@/types";
-import MyComponent from "@/components/MyComponent.vue";
-
-const customUnion = z.discriminatedUnion("type", [
-    z.object({
-        type: z.literal("custom"),
-        initial: z.string(),
-        resetValue: z.string().optional(),
-    }),
-    z.object({
-        type: z.literal("custom2"),
-        initial: z.string(),
-        resetValue: z.string().optional(),
-    }),
-]).and(externalInputSchema);
-
-type CustomInputMeta = InputMeta | z.infer<typeof customUnion>;
+import useVtForm from "./composables/useVtForm";
+import { formField } from "./form";
+import FormBuilder from "./components/FormBuilder.vue";
+import { Button } from "./components/ui/button";
+import { type Registry } from "./types";
+import MyComponent from "./components/MyComponent.vue";
 
 const schema = z.object({
-    text: formField(z.string(), {
+    text: formField(z.string().min(10), {
         label: "text",
         description: "description",
         type: "text",
@@ -134,11 +119,11 @@ const schema = z.object({
         initial: "",
         tooltip: "tooltip",
     }),
-    range: formField(z.number().int().min(1).max(5), {
+    range: formField(z.number().int().min(0).max(6).step(2), {
         label: "range",
         description: "description",
         type: "range",
-        initial: 1,
+        initial: 0,
         tooltip: "tooltip",
     }),
     multirange: formField(z.number().int().array(), {
@@ -148,7 +133,16 @@ const schema = z.object({
         initial: [0, 100],
         tooltip: "tooltip",
     }),
-    custom: formField<z.ZodTypeAny, CustomInputMeta>(z.string(), {
+    rating: formField(z.number().int().min(1).max(5), {
+        label: "rating",
+        description: "description",
+        type: "rating",
+        initial: 1,
+        tooltip: "tooltip",
+        icon: "number"
+    }),
+    // external input type - use type any for now
+    custom: formField<z.ZodTypeAny, any>(z.string(), {
         label: "custom",
         description: "description",
         type: "custom",
@@ -157,13 +151,14 @@ const schema = z.object({
     }),
 });
 
+// user-provided component registry
 const registry: Registry = {
     custom: {
         component: MyComponent,
         props: {
-            title: (def, meta, model) => model.value
-        }
-    }
+            title: (def, meta, model) => model.value,
+        },
+    },
 };
 
 const { formData, validity, error, isValid } = useVtForm(schema);

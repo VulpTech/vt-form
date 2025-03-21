@@ -75,6 +75,12 @@ export const inputMetaSchema = z.discriminatedUnion("type", [
         resetValue: z.any().optional(),
     }),
     z.object({
+        type: z.literal("rating"),
+        initial: z.number(),
+        icon: z.enum(["star", "number"]).default("star").optional(),
+        resetValue: z.number().optional(),
+    }),
+    z.object({
         type: z.literal("hidden"),
         initial: z.any(),
         resetValue: z.any().optional(),
@@ -106,6 +112,6 @@ export type FormSchema = z.ZodObject<{ [key: string]: InputSchema }>;
 
 export type Registry = Record<string, {
     component: Component;
-    props?: Record<string, (def: z.ZodTypeAny, meta: InputMeta, model: Ref<any>, field: InputSchema, fieldKey: string) => any>;
-    events?: Record<string, (def: z.ZodTypeAny, meta: InputMeta, model: Ref<any>, field: InputSchema, fieldKey: string) => Function>;
+    props?: Record<string, (def: z.ZodTypeDef, meta: InputMeta, model: Ref<any>, field: InputSchema, fieldKey: string) => any>;
+    events?: Record<string, (def: z.ZodTypeDef, meta: InputMeta, model: Ref<any>, field: InputSchema, fieldKey: string) => Function>;
 }>;
