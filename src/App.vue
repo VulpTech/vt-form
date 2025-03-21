@@ -57,6 +57,13 @@ const schema = z.object({
             placeholder: "placeholder",
             tooltip: "tooltip",
         }),
+        number: formField(z.number().int().min(1).max(5), {
+            label: "number",
+            description: "description",
+            type: "number",
+            initial: 1,
+            tooltip: "tooltip",
+        }),
         checkbox: formField(z.boolean(), {
             label: "checkbox",
             description: "description",
@@ -67,33 +74,42 @@ const schema = z.object({
             falseValue: false,
         }),
     }), {
-        label: "object",
+        label: "group",
         description: "description",
         type: "group",
         initial: {
             url: "",
+            number: 1,
             checkbox: false,
         },
         tooltip: "tooltip",
         class: "col-span-full", // self
-        groupClass: "flex flex-col", // children container
+        // groupClass: "flex flex-col", // children container
     }),
     list: formField(z.object({
-        key: formField(z.string(), {
-            label: "key",
+        text: formField(z.string(), {
+            label: "text",
             description: "description",
             type: "text",
             initial: "",
             placeholder: "placeholder",
             tooltip: "tooltip",
         }),
+        date: formField(z.string().date(), {
+            label: "date",
+            description: "description",
+            type: "date",
+            initial: "",
+            tooltip: "tooltip",
+        }),
     }).array(), {
-        label: "list",
+        label: "add",
         description: "description",
         type: "add",
         initial: [],
         element: {
-            key: ""
+            text: "",
+            date: ""
         },
         tooltip: "tooltip"
     }),
@@ -116,6 +132,14 @@ const schema = z.object({
         description: "description",
         type: "password",
         placeholder: "placeholder",
+        initial: "",
+        tooltip: "tooltip",
+    }),
+    search: formField(z.string(), {
+        label: "search",
+        description: "description",
+        type: "search",
+        placeholder: "Search...",
         initial: "",
         tooltip: "tooltip",
     }),
