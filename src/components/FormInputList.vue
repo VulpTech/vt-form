@@ -48,7 +48,7 @@ function remove(index: number) {
                 </div>
             </div>
         </CardContent>
-        <CardFooter v-if="!fieldSchema._def.exactLength || (fieldSchema._def.maxLength && model.length < fieldSchema._def.maxLength.value)">
+        <CardFooter v-if="!fieldSchema._def.exactLength || (fieldSchema._def.maxLength && model.length < fieldSchema._def.maxLength.value)" :class="model.length === 0 ? 'pt-6' : ''">
             <Button @click="add">+ Add</Button>
         </CardFooter>
     </Card>
