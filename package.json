@@ -1,11 +1,15 @@
 {
-    "name": "vt-form",
+    "name": "@vulptech/vt-form",
     "version": "0.1.0",
     "type": "module",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/VulpTech/vt-form.git"
     },
+    "bugs": {
+        "url": "https://github.com/VulpTech/vt-form/issues"
+    },
+    "homepage": "https://github.com/VulpTech/vt-form/tree/main/#readme",
     "keywords": [
         "vue3",
         "vue",
