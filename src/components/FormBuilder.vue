@@ -26,7 +26,8 @@ const model = defineModel<z.infer<typeof props.schema> | undefined>({ required: 
             >
                 <FormInput
                     :fieldKey="(fieldKey as string)"
-                    :field="field" v-model="model[fieldKey]"
+                    :field="field"
+                    v-model="model[fieldKey]"
                     :disabled="disabled"
                     :registry="props.registry"
                 />
