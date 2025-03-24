@@ -7,6 +7,21 @@ import { Button } from "./components/ui/button";
 import { type Registry } from "./types";
 import MyComponent from "./components/MyComponent.vue";
 
+const searchList = [
+    {
+        label: "Option 1",
+        value: "1",
+    },
+    {
+        label: "Option 2",
+        value: "2",
+    },
+    {
+        label: "Option 3",
+        value: "3",
+    },
+];
+
 const schema = z.object({
     text: formField(z.string().min(10), {
         label: "text",
@@ -142,6 +157,7 @@ const schema = z.object({
         placeholder: "Search...",
         initial: "",
         tooltip: "tooltip",
+        listQuery: async (s: string) => searchList.filter(o => o.label.toLowerCase().includes(s.toLowerCase())),
     }),
     range: formField(z.number().int().min(0).max(6).step(2), {
         label: "range",

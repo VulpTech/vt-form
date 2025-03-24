@@ -47,7 +47,7 @@ export const inputMetaSchema = z.discriminatedUnion("type", [
     }),
     z.object({
         type: z.literal("search"),
-        listQuery: z.function().args(z.string()).returns(optionSchema.array()).optional(),
+        listQuery: z.function().args(z.string()).returns(optionSchema.array()),
         getQuery: z.function().args(z.string()).returns(z.any()).optional(),
         resultLabel: z.string().optional(),
         initial: z.any(),

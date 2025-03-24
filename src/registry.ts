@@ -96,7 +96,7 @@ export const defaultRegistry: Registry = {
     search: {
         component: SearchInput,
         props: {
-            listQuery: (def, meta, model) => meta.type === "search" ? (meta.listQuery || undefined) : undefined,
+            listQuery: (def, meta, model) => meta.type === "search" ? meta.listQuery : undefined,
             getQuery: (def, meta, model) => meta.type === "search" ? (meta.getQuery || undefined) : undefined,
             resultLabel: (def, meta, model) => meta.type === "search" ? (meta.resultLabel || undefined) : undefined,
         }
