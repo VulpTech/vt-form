@@ -1,7 +1,6 @@
 {
     "name": "vt-form",
-    "private": true,
-    "version": "1.0.0",
+    "version": "0.1.0",
     "type": "module",
     "repository": {
         "type": "git",
@@ -44,27 +43,27 @@
     },
     "devDependencies": {
         "@types/jsdom": "^21.1.7",
-        "@types/node": "^22.10.2",
-        "@vitejs/plugin-vue": "^5.2.1",
+        "@types/node": "^22.13.11",
+        "@vitejs/plugin-vue": "^5.2.3",
         "@vue/test-utils": "^2.4.6",
-        "autoprefixer": "^10.4.20",
+        "autoprefixer": "^10.4.21",
         "jsdom": "^25.0.1",
         "tailwindcss": "^3.4.17",
         "typescript": "~5.6.3",
-        "vite": "^6.0.3",
-        "vite-plugin-dts": "^4.3.0",
-        "vite-plugin-vue-devtools": "^7.6.8",
-        "vitest": "^2.1.5",
-        "vue-tsc": "^2.1.10"
+        "vite": "^6.2.2",
+        "vite-plugin-dts": "^4.5.3",
+        "vite-plugin-vue-devtools": "^7.7.2",
+        "vitest": "^2.1.9",
+        "vue-tsc": "^2.2.8"
     },
     "dependencies": {
-        "@internationalized/date": "^3.6.0",
-        "@vueuse/core": "^12.0.0",
+        "@internationalized/date": "^3.7.0",
+        "@vueuse/core": "^12.8.2",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
-        "lucide-vue-next": "^0.468.0",
-        "radix-vue": "^1.9.11",
-        "tailwind-merge": "^2.5.5",
+        "lucide-vue-next": "^0.483.0",
+        "radix-vue": "^1.9.17",
+        "tailwind-merge": "^2.6.0",
         "tailwindcss-animate": "^1.0.7"
     }
 }

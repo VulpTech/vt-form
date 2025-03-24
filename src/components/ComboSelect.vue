@@ -68,7 +68,7 @@ watch(model, (newValue) => {
                 <CommandEmpty>No results found.</CommandEmpty>
                 <CommandList>
                     <CommandGroup>
-                        <CommandItem v-for="option in props.options" :key="option.value" :value="option.value" @select="(ev) => {
+                        <CommandItem v-for="option in props.options" :key="option.value" :value="option.value" class="cursor-pointer" @select="(ev) => {
                             if (typeof ev.detail.value === 'string') {
                                 if (props.multiple) {
                                     if (model.includes(ev.detail.value)) {

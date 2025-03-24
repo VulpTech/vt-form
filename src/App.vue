@@ -1,12 +1,29 @@
 <script lang="ts" setup>
 import * as z from "zod";
-import useVtForm from "@/composables/useVtForm";
-import { formField } from "@/form";
-import FormBuilder from "@/components/FormBuilder.vue";
-import { Button } from "@/components/ui/button";
+import useVtForm from "./composables/useVtForm";
+import { formField } from "./form";
+import FormBuilder from "./components/FormBuilder.vue";
+import { Button } from "./components/ui/button";
+import { type Registry } from "./types";
+import MyComponent from "./components/MyComponent.vue";
+
+const searchList = [
+    {
+        label: "Option 1",
+        value: "1",
+    },
+    {
+        label: "Option 2",
+        value: "2",
+    },
+    {
+        label: "Option 3",
+        value: "3",
+    },
+];
 
 const schema = z.object({
-    text: formField(z.string(), {
+    text: formField(z.string().min(10), {
         label: "text",
         description: "description",
         type: "text",
@@ -30,7 +47,8 @@ const schema = z.object({
         placeholder: "placeholder",
         initial: [],
         options: [{ label: "label 1", value: "value 1" }, { label: "label 2", value: "value 2" }],
-        tooltip: "tooltip"
+        tooltip: "tooltip",
+        multiple: true,
     }),
     textarea: formField(z.string(), {
         label: "textarea",
@@ -54,6 +72,13 @@ const schema = z.object({
             placeholder: "placeholder",
             tooltip: "tooltip",
         }),
+        number: formField(z.number().int().min(1).max(5), {
+            label: "number",
+            description: "description",
+            type: "number",
+            initial: 1,
+            tooltip: "tooltip",
+        }),
         checkbox: formField(z.boolean(), {
             label: "checkbox",
             description: "description",
@@ -64,40 +89,50 @@ const schema = z.object({
             falseValue: false,
         }),
     }), {
-        label: "object",
+        label: "group",
         description: "description",
         type: "group",
         initial: {
             url: "",
+            number: 1,
             checkbox: false,
         },
         tooltip: "tooltip",
-        class: "col-span-full",
+        class: "col-span-full", // self
+        // groupClass: "flex flex-col", // children container
     }),
     list: formField(z.object({
-        key: formField(z.string(), {
-            label: "key",
+        text: formField(z.string(), {
+            label: "text",
             description: "description",
             type: "text",
             initial: "",
             placeholder: "placeholder",
             tooltip: "tooltip",
         }),
+        date: formField(z.string().date(), {
+            label: "date",
+            description: "description",
+            type: "date",
+            initial: "",
+            tooltip: "tooltip",
+        }),
     }).array(), {
-        label: "list",
+        label: "add",
         description: "description",
         type: "add",
         initial: [],
         element: {
-            key: ""
+            text: "",
+            date: ""
         },
         tooltip: "tooltip"
     }),
-    number: formField(z.number().int(), {
+    number: formField(z.number().int().min(1).max(5), {
         label: "number",
         description: "description",
         type: "number",
-        initial: 0,
+        initial: 1,
         tooltip: "tooltip",
     }),
     date: formField(z.string().date(), {
@@ -115,11 +150,20 @@ const schema = z.object({
         initial: "",
         tooltip: "tooltip",
     }),
-    range: formField(z.number().int().min(1).max(5), {
+    search: formField(z.string(), {
+        label: "search",
+        description: "description",
+        type: "search",
+        placeholder: "Search...",
+        initial: "",
+        tooltip: "tooltip",
+        listQuery: async (s: string) => searchList.filter(o => o.label.toLowerCase().includes(s.toLowerCase())),
+    }),
+    range: formField(z.number().int().min(0).max(6).step(2), {
         label: "range",
         description: "description",
         type: "range",
-        initial: 1,
+        initial: 0,
         tooltip: "tooltip",
     }),
     multirange: formField(z.number().int().array(), {
@@ -129,19 +173,41 @@ const schema = z.object({
         initial: [0, 100],
         tooltip: "tooltip",
     }),
+    rating: formField(z.number().int().min(1).max(5), {
+        label: "rating",
+        description: "description",
+        type: "rating",
+        initial: 1,
+        tooltip: "tooltip",
+        icon: "number"
+    }),
+    // external input type - use type any for now
+    custom: formField<z.ZodTypeAny, any>(z.string(), {
+        label: "custom",
+        description: "description",
+        type: "custom",
+        initial: "title",
+        tooltip: "tooltip",
+    }),
 });
 
-const { formData, validity, error, isValid } = useVtForm(schema);
+// user-provided component registry
+const registry: Registry = {
+    custom: {
+        component: MyComponent,
+        props: {
+            title: (def, meta, model) => model.value,
+        },
+    },
+};
 
-// const d2 = ref(undefined)
+const { formData, validity, error, isValid } = useVtForm(schema);
 </script>
 
 <template>
     <div class="p-4">
         <p>error:{{ error }}</p>
-        <FormBuilder v-model="formData" :schema="schema" class="grid grid-cols-2 gap-3" />
-
-        <!-- <FormBuilder v-model="d2" :schema="schema" class="grid grid-cols-2 gap-3" /> -->
+        <FormBuilder v-model="formData" :schema="schema" :registry="registry" class="grid grid-cols-2 gap-3" />
         <Button :disabled="!isValid">Submit</Button>
         <p>isValid: {{ isValid }}</p>
         <pre>{{ schema.shape }}</pre>

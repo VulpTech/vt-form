@@ -5,8 +5,9 @@ import { useDebounceFn } from "@vueuse/core";
 import { cn } from "@/lib/utils";
 import { type Option } from "@/types";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogTrigger, DialogContent, DialogHeader } from "@/components/ui/dialog";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type SearchOption = Omit<Option, "label"> & {
     label?: string;
@@ -15,7 +16,7 @@ type SearchOption = Omit<Option, "label"> & {
 
 const props = defineProps<{
     placeholder?: string;
-    listQuery: (term: string) => Promise<SearchOption>[];
+    listQuery: (term: string) => Promise<SearchOption[]>;
     getQuery?: (value: string) => Promise<any>;
     resultLabel?: string;
     class?: HTMLAttributes["class"];
@@ -27,6 +28,7 @@ const open = ref(false);
 const searchTerm = ref("");
 const results = ref<SearchOption[]>([]);
 const loading = ref(false);
+const selectedItem = ref<any | null>(null);
 
 const emits = defineEmits<{
     focus: [];
@@ -36,16 +38,18 @@ const emits = defineEmits<{
     change: [value: string | string[]];
 }>();
 
-const debouncedRequest = useDebounceFn(async () => {
-    return await props.listQuery(searchTerm.value);
+const debouncedRequest = useDebounceFn(async (term: string) => {
+    const result = await props.listQuery(term);
+    loading.value = false;
+    return result;
 }, 200);
 
-async function runListQuery() {
-    if (searchTerm.value !== "") {
+async function runListQuery(e: InputEvent) {
+    const term = (e.target as HTMLInputElement).value;
+    if (term !== "") {
         loading.value = true;
         // @ts-ignore - nested Promise?
-        results.value = await debouncedRequest();
-        loading.value = false;
+        results.value = await debouncedRequest(term);
     } else {
         results.value = [];
     }
@@ -55,8 +59,10 @@ async function handleSelect(result: SearchOption) {
     if (!!props.getQuery) {
         const item = await props.getQuery(result.value);
         model.value = item;
+        selectedItem.value = item;
     } else {
         model.value = result.value;
+        selectedItem.value = result;
     }
     open.value = false;
     searchTerm.value = "";
@@ -69,6 +75,11 @@ function displayResult(result: SearchOption): string {
     } else {
         return result.label || result.value;
     }
+}
+
+function handleClear() {
+    selectedItem.value = null;
+    emits("clear");
 }
 
 watch(open, (newValue) => {
@@ -90,24 +101,31 @@ watch(model, (newValue) => {
         <div :class="cn('relative w-full items-center', props.class)">
             <DialogTrigger as-child>
                 <Button variant="outline" :class="cn('justify-start w-full pr-10', props.class)">
-                    <Search class="size-6 text-muted-foreground -ml-2 pr-1" />
+                    <Search class="size-4 text-muted-foreground mr-2" />
                     <span :class="`overflow-x-hidden ${Object.keys(model).length === 0 ? 'text-muted-foreground' : ''}`">
-                        <template v-if="Object.keys(model).length > 0">{{ displayResult(model) }}</template>
+                        <template v-if="selectedItem !== null">{{ displayResult(selectedItem) }}</template>
                         <template v-else>{{ placeholder || "Search" }}</template>
                     </span>
                 </Button>
             </DialogTrigger>
             <span class="absolute end-0 inset-y-0 flex items-center justify-center">
-                <Button size="icon" variant="link" class="text-muted-foreground hover:text-foreground" @click="emits('clear')"><X class="size-4" /></Button>
+                <Button size="icon" variant="link" class="text-muted-foreground hover:text-foreground" @click="handleClear"><X class="size-4" /></Button>
             </span>
         </div>
         <DialogContent>
-            <DialogHeader>Search</DialogHeader>
+            <DialogHeader>
+                <DialogTitle>Search</DialogTitle>
+                <DialogDescription class="hidden"></DialogDescription>
+            </DialogHeader>
             <div>
                 <Input type="search" placeholder="Search..." v-model="searchTerm" @input="runListQuery" autofocus />
             </div>
             <div v-if="searchTerm !== ''" class="flex flex-col gap-1">
-                <span v-if="loading">Loading...</span>
+                <div v-if="loading" class="flex flex-col gap-2">
+                    <Skeleton class="h-4 w-[250px]" />
+                    <Skeleton class="h-4 w-[250px]" />
+                    <Skeleton class="h-4 w-[250px]" />
+                </div>
                 <template v-else-if="results">
                     <div v-for="result in results" class="hover:bg-muted cursor-pointer p-2 rounded"
                         @click="handleSelect(result)">
