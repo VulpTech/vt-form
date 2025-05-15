@@ -10,11 +10,11 @@ Create a dynamic & reactive form with built-in validation by only defining a [Zo
 ## Install
 To install, run:
 ```bash
-npm install vt-form
+npm install @vulptech/vt-form
 ```
 or
 ```bash
-pnpm add vt-form
+pnpm add @vulptech/vt-form
 ```
 
 ## Usage
@@ -23,7 +23,7 @@ A simple example of creating a form containing a single text input.
 ```vue
 <script lang="ts" setup>
 import * as z  from "zod";
-import { FormBuilder, schemaCreateEmptyObject, formField } from "vt-form";
+import { FormBuilder, schemaCreateEmptyObject, formField } from "@vulptech/vt-form";
 
 const schema = z.object({
     text: formField(z.string(), {
@@ -50,7 +50,7 @@ You can register your own components and use them in dynamic forms by declaring 
 ```vue
 <script lang="ts" setup>
 import * as z  from "zod";
-import { FormBuilder, schemaCreateEmptyObject, formField, type Registry } from "vt-form";
+import { FormBuilder, schemaCreateEmptyObject, formField, type Registry } from "@vulptech/vt-form";
 
 const schema = z.object({
     text: formField(z.string(), {
