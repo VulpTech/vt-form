@@ -23,7 +23,7 @@ A simple example of creating a form containing a single text input.
 ```vue
 <script lang="ts" setup>
 import * as z  from "zod";
-import { FormBuilder, formField } from "@vulptech/vt-form";
+import { FormBuilder, formField, useVtForm } from "@vulptech/vt-form";
 
 const schema = z.object({
     text: formField(z.string(), {
@@ -50,7 +50,7 @@ You can register your own components and use them in dynamic forms by declaring 
 ```vue
 <script lang="ts" setup>
 import * as z  from "zod";
-import { FormBuilder, formField, type Registry } from "@vulptech/vt-form";
+import { FormBuilder, formField, useVtForm, type Registry } from "@vulptech/vt-form";
 
 const schema = z.object({
     text: formField(z.string(), {
