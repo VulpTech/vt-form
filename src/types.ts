@@ -3,7 +3,7 @@ import * as z from "zod";
 
 export const optionSchema = z.object({
     label: z.string().min(1),
-    value: z.string().min(1),
+    value: z.union([z.string().min(1), z.number(), z.record(z.any())]),
 });
 export interface Option extends z.infer<typeof optionSchema> { };
 

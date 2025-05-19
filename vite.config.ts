@@ -4,16 +4,10 @@ import dts from "vite-plugin-dts";
 import { fileURLToPath, URL } from "node:url"
 import { resolve } from "path";
 import vueDevTools from "vite-plugin-vue-devtools";
-import autoprefixer from "autoprefixer";
-import tailwind from "tailwindcss";
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-    css: {
-        postcss: {
-            plugins: [tailwind(), autoprefixer()],
-        },
-    },
-    plugins: [vue(), vueDevTools(), dts()],
+    plugins: [vue(), vueDevTools(), dts(), tailwindcss()],
     build: {
         lib: {
             entry: resolve(__dirname, "src/index.ts"),
