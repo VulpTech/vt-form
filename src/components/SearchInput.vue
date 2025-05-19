@@ -3,14 +3,14 @@ import { ref, type HTMLAttributes, watch } from "vue";
 import { Search, X } from "lucide-vue-next";
 import { useDebounceFn } from "@vueuse/core";
 import { cn } from "@/lib/utils";
-import { type Option } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 
-type SearchOption = Omit<Option, "label"> & {
+type SearchOption = {
     label?: string;
+    value: string;
     [key: string]: any;
 };
 
@@ -91,6 +91,9 @@ watch(open, (newValue) => {
 });
 
 watch(model, (newValue) => {
+    if (!!props.getQuery) {
+        selectedItem.value = newValue;
+    }
     emits("input", newValue);
     emits("change", newValue);
 });
