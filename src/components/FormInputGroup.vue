@@ -20,7 +20,7 @@ const shape = getZodSchema(props.field).shape;
 </script>
 
 <template>
-    <Card class="grow">
+    <Card class="grow py-0">
         <CardContent class="p-6">
             <div :class="cn('grid grid-cols-2 gap-2', 'metadata' in props.field && props.field.metadata.type === 'group' ? props.field.metadata.groupClass : undefined)">
                 <template v-for="(f, k) in shape" :key="k">

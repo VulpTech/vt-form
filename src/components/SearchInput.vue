@@ -100,8 +100,8 @@ watch(model, (newValue) => {
 </script>
 
 <template>
-    <Dialog v-model:open="open">
-        <div :class="cn('relative w-full items-center', props.class)">
+    <div :class="cn('relative w-full items-center', props.class)">
+        <Dialog v-model:open="open">
             <DialogTrigger as-child>
                 <Button variant="outline" :class="cn('justify-start w-full pr-10', props.class)">
                     <Search class="size-4 text-muted-foreground mr-2" />
@@ -111,32 +111,32 @@ watch(model, (newValue) => {
                     </span>
                 </Button>
             </DialogTrigger>
-            <span class="absolute end-0 inset-y-0 flex items-center justify-center">
-                <Button size="icon" variant="link" class="text-muted-foreground hover:text-foreground" @click="handleClear"><X class="size-4" /></Button>
-            </span>
-        </div>
-        <DialogContent>
-            <DialogHeader>
-                <DialogTitle>Search</DialogTitle>
-                <DialogDescription class="hidden"></DialogDescription>
-            </DialogHeader>
-            <div>
-                <Input type="search" placeholder="Search..." v-model="searchTerm" @input="runListQuery" autofocus />
-            </div>
-            <div v-if="searchTerm !== ''" class="flex flex-col gap-1">
-                <div v-if="loading" class="flex flex-col gap-2">
-                    <Skeleton class="h-4 w-[250px]" />
-                    <Skeleton class="h-4 w-[250px]" />
-                    <Skeleton class="h-4 w-[250px]" />
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Search</DialogTitle>
+                    <DialogDescription class="hidden"></DialogDescription>
+                </DialogHeader>
+                <div>
+                    <Input type="search" placeholder="Search..." v-model="searchTerm" @input="runListQuery" autofocus />
                 </div>
-                <template v-else-if="results">
-                    <div v-for="result in results" class="hover:bg-muted cursor-pointer p-2 rounded"
-                        @click="handleSelect(result)">
-                        {{ displayResult(result) }}
+                <div v-if="searchTerm !== ''" class="flex flex-col gap-1">
+                    <div v-if="loading" class="flex flex-col gap-2">
+                        <Skeleton class="h-4 w-[250px]" />
+                        <Skeleton class="h-4 w-[250px]" />
+                        <Skeleton class="h-4 w-[250px]" />
                     </div>
-                    <span v-if="results.length === 0">No results found</span>
-                </template>
-            </div>
-        </DialogContent>
-    </Dialog>
+                    <template v-else-if="results">
+                        <div v-for="result in results" class="hover:bg-muted cursor-pointer p-2 rounded"
+                            @click="handleSelect(result)">
+                            {{ displayResult(result) }}
+                        </div>
+                        <span v-if="results.length === 0">No results found</span>
+                    </template>
+                </div>
+            </DialogContent>
+        </Dialog>
+        <span class="absolute end-0 inset-y-0 flex items-center justify-center">
+            <Button size="icon" variant="link" class="text-muted-foreground hover:text-foreground" @click="handleClear"><X class="size-4" /></Button>
+        </span>
+    </div>
 </template>
