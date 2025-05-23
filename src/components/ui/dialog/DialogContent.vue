@@ -22,7 +22,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
 </script>
 
 <template>
-  <DialogPortal>
+  <!-- <DialogPortal> -->
     <DialogOverlay />
     <DialogContent
       data-slot="dialog-content"
@@ -42,5 +42,5 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
         <span class="sr-only">Close</span>
       </DialogClose>
     </DialogContent>
-  </DialogPortal>
+  <!-- </DialogPortal> -->
 </template>
