@@ -12,6 +12,7 @@ import DateInput from "@/components/DateInput.vue";
 import NumberInput from "@/components/NumberInput.vue";
 import FormRange from "@/components/FormRange.vue";
 import Rating from "@/components/Rating.vue";
+import RadioInput from "@/components/RadioInput.vue";
 
 export const defaultRegistry: Registry = {
     text: {
@@ -84,6 +85,13 @@ export const defaultRegistry: Registry = {
         props: {
             options: (def, meta, model) => meta.type === "select" ? meta.options : undefined,
             multiple: (def, meta, model) => meta.type === "select" ? meta.multiple : undefined,
+            hideSearch: (def, meta, model) => meta.type === "select" ? meta.hideSearch : undefined,
+        }
+    },
+    radio: {
+        component: RadioInput,
+        props: {
+            options: (def, meta, model) => meta.type === "radio" ? meta.options : undefined,
         }
     },
     add: {

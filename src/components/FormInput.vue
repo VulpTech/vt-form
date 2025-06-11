@@ -62,7 +62,7 @@ watch(model, () => {
 
 <template>
     <div v-if="fieldMeta.type !== 'hidden'" :class="cn('form-input flex flex-col gap-1', fieldMeta.class)">
-        <div :class="`flex gap-1 ${['checkbox', 'switch', 'radio'].includes(fieldMeta.type) ? 'flex-row-reverse items-center justify-end' : 'flex-col'}`">
+        <div :class="`flex gap-1 ${['checkbox', 'switch'].includes(fieldMeta.type) ? 'flex-row-reverse items-center justify-end' : 'flex-col'}`">
             <div class="flex flex-row gap-1 items-center">
                 <Label v-if="fieldMeta.label" :for="props.fieldKey">{{ fieldMeta.label }}<span v-if="required" class="text-destructive"> *</span></Label>
                 <CustomTooltip v-if="fieldMeta.tooltip">

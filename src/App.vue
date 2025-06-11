@@ -6,21 +6,13 @@ import FormBuilder from "./components/FormBuilder.vue";
 import { Button } from "./components/ui/button";
 import { type Registry } from "./types";
 import MyComponent from "./components/MyComponent.vue";
+import type { Option } from "./types"
 
-const searchList = [
-    {
-        label: "Option 1",
-        value: "1",
-    },
-    {
-        label: "Option 2",
-        value: "2",
-    },
-    {
-        label: "Option 3",
-        value: "3",
-    },
-];
+function generateOptions(length: number, size: "long" | "short" = "short"): Option[] {
+    return [...Array(length).keys()].map(k => {
+        return {value: `option ${k + 1}`, label: `${size === 'long' ? 'The long label for option' : 'Label'} ${k + 1}`};
+    });
+}
 
 const schema = z.object({
     text: formField(z.string().min(10), {
@@ -46,9 +38,18 @@ const schema = z.object({
         type: "select",
         placeholder: "placeholder",
         initial: [],
-        options: [{ label: "label 1", value: "value 1" }, { label: "label 2", value: "value 2" }],
+        options: generateOptions(10, "long"),
         tooltip: "tooltip",
         multiple: true,
+        hideSearch: true,
+    }),
+    radio: formField(z.string(), {
+        label: "radio",
+        description: "description",
+        type: "radio",
+        initial: "",
+        options: generateOptions(4),
+        tooltip: "tooltip",
     }),
     textarea: formField(z.string(), {
         label: "textarea",
@@ -157,7 +158,7 @@ const schema = z.object({
         placeholder: "Search...",
         initial: "",
         tooltip: "tooltip",
-        listQuery: async (s: string) => searchList.filter(o => o.label.toLowerCase().includes(s.toLowerCase())),
+        listQuery: async (s: string) => generateOptions(10, "long").filter(o => o.label.toLowerCase().includes(s.toLowerCase())),
     }),
     range: formField(z.number().int().min(0).max(6).step(2), {
         label: "range",

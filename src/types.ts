@@ -44,6 +44,13 @@ export const inputMetaSchema = z.discriminatedUnion("type", [
         initial: z.union([z.string(), z.string().array()]),
         resetValue: z.union([z.string(), z.string().array()]).optional(),
         multiple: z.boolean().optional(),
+        hideSearch: z.boolean().optional(),
+    }),
+    z.object({
+        type: z.literal("radio"),
+        options: z.union([optionSchema.array(), z.null()]).optional(),
+        initial: z.string(),
+        resetValue: z.string().optional(),
     }),
     z.object({
         type: z.literal("search"),
