@@ -12,6 +12,7 @@ import FormRange from "./components/FormRange.vue";
 import NumberInput from "./components/NumberInput.vue";
 import SearchInput from "./components/SearchInput.vue";
 import Rating from "./components/Rating.vue";
+import TagInput from "./components/TagInput.vue";
 import useVtForm from "@/composables/useVtForm";
 
 export * from "./form";
@@ -30,5 +31,6 @@ export {
     NumberInput,
     SearchInput,
     Rating,
+    TagInput,
     useVtForm,
 };

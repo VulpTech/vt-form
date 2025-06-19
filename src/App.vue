@@ -182,6 +182,14 @@ const schema = z.object({
         tooltip: "tooltip",
         icon: "number"
     }),
+    tags: formField(z.string().array(), {
+        label: "tags",
+        description: "description",
+        type: "tags",
+        initial: [],
+        tooltip: "tooltip",
+        placeholder: "placeholder",
+    }),
     // external input type - use type any for now
     custom: formField<z.ZodTypeAny, any>(z.string(), {
         label: "custom",
@@ -206,7 +214,7 @@ const { formData, validity, error, isValid } = useVtForm(schema);
 </script>
 
 <template>
-    <div class="p-4">
+    <div class="p-4 flex flex-col items-start gap-3">
         <p>error:{{ error }}</p>
         <FormBuilder v-model="formData" :schema="schema" :registry="registry" class="grid grid-cols-2 gap-3" />
         <Button :disabled="!isValid">Submit</Button>

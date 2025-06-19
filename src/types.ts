@@ -88,6 +88,11 @@ export const inputMetaSchema = z.discriminatedUnion("type", [
         resetValue: z.number().optional(),
     }),
     z.object({
+        type: z.literal("tag"),
+        initial: z.string().array(),
+        resetValue: z.string().array().optional(),
+    }),
+    z.object({
         type: z.literal("hidden"),
         initial: z.any(),
         resetValue: z.any().optional(),

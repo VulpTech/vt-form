@@ -13,6 +13,7 @@ import NumberInput from "@/components/NumberInput.vue";
 import FormRange from "@/components/FormRange.vue";
 import Rating from "@/components/Rating.vue";
 import RadioInput from "@/components/RadioInput.vue";
+import TagInput from "./components/TagInput.vue";
 
 export const defaultRegistry: Registry = {
     text: {
@@ -142,6 +143,9 @@ export const defaultRegistry: Registry = {
             max: (def, meta, model) => (def as z.ZodNumberDef).checks?.find(c => c.kind === 'max')?.value,
             step: (def, meta, model) => (def as z.ZodNumberDef).checks?.find(c => c.kind === 'multipleOf')?.value,
         }
+    },
+    tags: {
+        component: TagInput,
     },
     default: {
         component: CustomInput,
