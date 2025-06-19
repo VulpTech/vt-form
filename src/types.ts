@@ -1,4 +1,4 @@
-import type { Ref, Component } from "vue";
+import type { Ref, Component, HTMLAttributes } from "vue";
 import * as z from "zod";
 
 export const optionSchema = z.object({
@@ -14,6 +14,7 @@ export const externalInputSchema = z.object({
     style: z.string().optional(),
     class: z.string().optional(),
     tooltip: z.string().optional(),
+    step: z.string().optional(),
 });
 
 export const inputMetaSchema = z.discriminatedUnion("type", [
@@ -88,7 +89,7 @@ export const inputMetaSchema = z.discriminatedUnion("type", [
         resetValue: z.number().optional(),
     }),
     z.object({
-        type: z.literal("tag"),
+        type: z.literal("tags"),
         initial: z.string().array(),
         resetValue: z.string().array().optional(),
     }),
@@ -127,3 +128,27 @@ export type Registry = Record<string, {
     props?: Record<string, (def: z.ZodTypeDef, meta: InputMeta, model: Ref<any>, field: InputSchema, fieldKey: string) => any>;
     events?: Record<string, (def: z.ZodTypeDef, meta: InputMeta, model: Ref<any>, field: InputSchema, fieldKey: string) => Function>;
 }>;
+
+export type Step = {
+    id: string;
+    label?: string;
+    description?: string;
+    class?: HTMLAttributes["class"];
+};
+
+type BaseStepConfig = {
+    type: "stepper" | "group";
+    steps: Step[];
+};
+
+type StepperStepConfig = BaseStepConfig & {
+    type: "stepper";
+    orientation?: "vertical" | "horizontal";
+    linear?: boolean;
+};
+
+type GroupStepConfig = BaseStepConfig & {
+    type: "group";
+};
+
+export type StepConfig = StepperStepConfig | GroupStepConfig;

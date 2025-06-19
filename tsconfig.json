@@ -36,5 +36,7 @@
         "src/main.ts",
         "src/**/__tests__/*",
         "src/App.vue",
+        "src/views/*",
+        "src/router/*"
     ],
 }

@@ -35,7 +35,7 @@ const emit = defineEmits<{
         :format-options="{ signDisplay: props.showSign ? 'exceptZero' : undefined }"
     >
         <div class="relative w-full items-center">
-            <NumberFieldContent >
+            <NumberFieldContent>
                 <NumberFieldDecrement />
                 <NumberFieldInput :class="cn('!pr-14', props.class)" />
                 <NumberFieldIncrement class="mr-10" />
