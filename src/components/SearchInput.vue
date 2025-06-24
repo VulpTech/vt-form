@@ -22,7 +22,7 @@ const props = defineProps<{
     class?: HTMLAttributes["class"];
 }>();
 
-const model = defineModel<any>({ required: true });
+const model = defineModel<any>();
 
 const open = ref(false);
 const searchTerm = ref("");
@@ -105,9 +105,9 @@ watch(model, (newValue) => {
             <DialogTrigger as-child>
                 <Button variant="outline" :class="cn('justify-start w-full pr-10', props.class)">
                     <Search class="size-4 text-muted-foreground mr-2" />
-                    <span :class="`overflow-x-hidden ${Object.keys(model).length === 0 ? 'text-muted-foreground' : ''}`">
+                    <span :class="`overflow-x-hidden ${model === undefined || Object.keys(model).length === 0 ? 'text-muted-foreground' : ''}`">
                         <template v-if="selectedItem !== null">{{ displayResult(selectedItem) }}</template>
-                        <template v-else>{{ placeholder || "Search" }}</template>
+                        <template v-else>{{ placeholder || "Search..." }}</template>
                     </span>
                 </Button>
             </DialogTrigger>

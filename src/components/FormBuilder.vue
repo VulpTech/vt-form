@@ -90,6 +90,7 @@ const stepShapes = computed(() => {
                                 <FormInput
                                     :fieldKey="(fieldKey as string)"
                                     :field="field"
+                                    :fieldPath="(fieldKey as string)"
                                     v-model="model[fieldKey]"
                                     :disabled="disabled"
                                     :registry="props.registry"
@@ -131,6 +132,7 @@ const stepShapes = computed(() => {
                     <FormInput
                         :fieldKey="(fieldKey as string)"
                         :field="field"
+                        :fieldPath="(fieldKey as string)"
                         v-model="model[fieldKey]"
                         :disabled="disabled"
                         :registry="props.registry"

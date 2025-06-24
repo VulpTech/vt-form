@@ -11,11 +11,11 @@ const props = defineProps<{
     step?: number;
 }>();
 
-const model = defineModel<number | number[]>({ required: true });
+const model = defineModel<number | number[]>();
 
 const modelArray = computed({
-    get: () => Array.isArray(model.value) ? model.value : [model.value],
-    set: val => model.value = val.length === 1 ? val[0] : val,
+    get: () => model.value ? (Array.isArray(model.value) ? model.value : [model.value]) : [0],
+    set: (val: number[]) => model.value = val.length === 1 ? val[0] : val,
 });
 </script>
 

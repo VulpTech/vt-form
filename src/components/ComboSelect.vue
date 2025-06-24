@@ -15,7 +15,7 @@ const props = defineProps<{
     hideSearch?: boolean;
 }>();
 
-const model = defineModel<AcceptableValue | AcceptableValue[]>({ required: true });
+const model = defineModel<AcceptableValue | AcceptableValue[]>();
 
 const open = ref(false);
 
@@ -23,8 +23,8 @@ const emits = defineEmits<{
     focus: [];
     blur: [];
     clear: [];
-    input: [value: AcceptableValue | AcceptableValue[]];
-    change: [value: AcceptableValue | AcceptableValue[]];
+    input: [value?: AcceptableValue | AcceptableValue[]];
+    change: [value?: AcceptableValue | AcceptableValue[]];
 }>();
 
 watch(open, (newValue) => {

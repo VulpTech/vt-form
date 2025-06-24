@@ -6,49 +6,64 @@ import { getZodSchema } from "@/form";
 import FormInputGroup from "@/components/FormInputGroup.vue";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ref, watch } from "vue";
 
 const props = defineProps<{
-    // fieldKey: string;
+    fieldKey: string;
     field: InputSchema<z.ZodArray<z.AnyZodObject>>;
+    fieldPath: string;
     registry?: Registry;
 }>();
 
 const fieldUnwrapped = props.field.unwrap();
-
-const model = defineModel<z.infer<typeof fieldUnwrapped>>({ required: true });
-
 const fieldSchema = getZodSchema(props.field);
-const fieldMeta = props.field.metadata;
+
+const model = defineModel<z.infer<typeof fieldUnwrapped>>();
+
+const element = Object.keys(fieldSchema.element.shape).reduce((obj, key) => {
+    obj[key] = undefined;
+    return obj;
+}, {} as Record<string, any>);
 
 function add() {
-    // @ts-ignore
-    model.value.push(structuredClone(fieldMeta.element));
+    if (model.value === undefined) {
+        model.value = [element];
+    } else {
+        model.value.push(structuredClone(element));
+    }
 }
 
 function remove(index: number) {
-    model.value.splice(index, 1);
+    if (model.value !== undefined) {
+        if (model.value.length === 1) {
+            model.value = undefined;
+        } else {
+            model.value.splice(index, 1);
+        }
+    }
 }
 </script>
 
 <template>
     <Card>
-        <CardContent v-if="model.length > 0" class="flex flex-col gap-4">
-            <div v-for="(_, index) in model" :key="index" class="flex flex-row gap-2">
-                <FormInputGroup v-model="model[index]" :field="fieldSchema.element" :registry="props.registry" />
-                <div v-if="!fieldSchema._def.exactLength" class="w-6 flex">
-                    <Button
-                        v-if="fieldMeta.initial.length === 0 || index > 0"
-                        variant="destructive"
-                        size="sm"
-                        class="my-auto"
-                        @click="remove(index)"
-                    >
-                        <Trash class="w-4 h-4" />
-                    </Button>
+        <template v-if="model">
+            <CardContent v-if="model.length > 0" class="flex flex-col gap-4">
+                <div v-for="(_, index) in model" :key="index" class="flex flex-row gap-2">
+                    <FormInputGroup v-model="model[index]" :field="fieldSchema.element" :registry="props.registry" :fieldPath="`${props.fieldPath}.${index}`" />
+                    <div v-if="!fieldSchema._def.exactLength" class="w-6 flex">
+                        <Button
+                            variant="destructive"
+                            size="sm"
+                            class="my-auto"
+                            @click="remove(index)"
+                        >
+                            <Trash class="w-4 h-4" />
+                        </Button>
+                    </div>
                 </div>
-            </div>
-        </CardContent>
-        <CardFooter v-if="!fieldSchema._def.exactLength || (fieldSchema._def.maxLength && model.length < fieldSchema._def.maxLength.value)" :class="model.length === 0 ? 'pt-0' : ''">
+            </CardContent>
+        </template>
+        <CardFooter v-if="model ? !fieldSchema._def.exactLength && (fieldSchema._def.maxLength && model.length < fieldSchema._def.maxLength.value) : true">
             <Button @click="add">+ Add</Button>
         </CardFooter>
     </Card>

@@ -1,9 +1,11 @@
-import { ref, computed } from "vue";
+import { ref, computed, provide } from "vue";
 import * as z from "zod";
 import { schemaCreateEmptyObject } from "@/form";
-import { FormSchema, StepConfig } from "@/types";
+import { type FormSchema, type StepConfig, formErrorsKey } from "@/types";
 
-export default function useVtForm<T extends FormSchema>(schema: T, steps?: StepConfig) {
+export default function useVtForm<T extends FormSchema>(schema: T, options?: {
+    steps?: StepConfig;
+}) {
     const error = ref<string | null>(null);
     const formData = ref<z.infer<typeof schema> | undefined>();
     const isValidating = ref<boolean>(false);
@@ -22,7 +24,14 @@ export default function useVtForm<T extends FormSchema>(schema: T, steps?: StepC
         return result;
     });
 
-    const validity = computed(() => parsed.value.error);
+    const formErrors = computed(() => parsed.value.error?.errors.map(e => {
+        return {
+            ...e,
+            path: e.path.join(".")
+        }
+    }) || []);
+
+    provide(formErrorsKey, formErrors);
 
     const isValid = computed(() => parsed.value.success);
 
@@ -33,7 +42,7 @@ export default function useVtForm<T extends FormSchema>(schema: T, steps?: StepC
     return {
         formData,
         isValidating,
-        validity,
+        formErrors,
         error,
         isValid,
         resetValues,

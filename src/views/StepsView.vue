@@ -16,7 +16,7 @@ const schema = z.object({
         label: "text",
         description: "description",
         type: "text",
-        initial: "",
+        initial: undefined,
         placeholder: "placeholder",
         tooltip: "tooltip",
         step: "step1",
@@ -39,6 +39,48 @@ const schema = z.object({
         tooltip: "tooltip",
         step: "step3",
     }),
+    object: formField(z.object({
+        text: formField(z.string(), {
+            label: "text",
+            description: "description",
+            type: "text",
+            initial: "",
+            placeholder: "placeholder",
+            tooltip: "tooltip",
+            step: "step1",
+        }),
+        number: formField(z.number(), {
+            label: "number",
+            description: "description",
+            type: "number",
+            initial: 0,
+            placeholder: "placeholder",
+            tooltip: "tooltip",
+            step: "step2",
+        }),
+        tags: formField(z.string().array(), {
+            label: "tags",
+            description: "description",
+            type: "tags",
+            initial: [],
+            placeholder: "placeholder",
+            tooltip: "tooltip",
+            step: "step3",
+        }),
+    }), {
+        type: "add",
+        step: "step1",
+        initial: [{
+            text: undefined,
+            number: 0,
+            tags: []
+        }],
+        element: {
+            text: undefined,
+            number: 0,
+            tags: []
+        }
+    })
 });
 
 const steps = computed<StepConfig>(() => {
@@ -66,7 +108,7 @@ const steps = computed<StepConfig>(() => {
     }
 });
 
-const { formData, validity, error, isValid } = useVtForm(schema, steps);
+const { formData, formErrors, error, isValid } = useVtForm(schema, {steps});
 </script>
 
 <template>
@@ -88,6 +130,6 @@ const { formData, validity, error, isValid } = useVtForm(schema, steps);
     <pre>formData: {{ formData }}</pre>
     <pre>isValid: {{ isValid }}</pre>
     <pre>error: {{ error }}</pre>
-    <pre>validity: {{ validity }}</pre>
+    <pre>formErrors: {{ formErrors }}</pre>
     <!-- <pre>{{ schema.shape }}</pre> -->
 </template>

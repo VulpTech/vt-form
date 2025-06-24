@@ -27,7 +27,6 @@ const schema = z.object({
         label: "text optional",
         description: "description",
         type: "text",
-        initial: "x",
         placeholder: "placeholder",
         tooltip: "tooltip",
     }),
@@ -36,7 +35,6 @@ const schema = z.object({
         description: "description",
         type: "select",
         placeholder: "placeholder",
-        initial: [],
         options: generateOptions(10, "long"),
         tooltip: "tooltip",
         multiple: true,
@@ -46,7 +44,6 @@ const schema = z.object({
         label: "radio",
         description: "description",
         type: "radio",
-        initial: "",
         options: generateOptions(4),
         tooltip: "tooltip",
     }),
@@ -54,7 +51,6 @@ const schema = z.object({
         label: "textarea",
         description: "description",
         type: "textarea",
-        initial: "",
         placeholder: "placeholder",
         class: "col-span-full",
         tooltip: "tooltip",
@@ -68,7 +64,6 @@ const schema = z.object({
             label: "url",
             description: "description",
             type: "url",
-            initial: "",
             placeholder: "placeholder",
             tooltip: "tooltip",
         }),
@@ -76,14 +71,12 @@ const schema = z.object({
             label: "number",
             description: "Must be between 1 & 5",
             type: "number",
-            initial: 1,
             tooltip: "tooltip",
         }),
         checkbox: formField(z.boolean(), {
             label: "checkbox",
             description: "description",
             type: "checkbox",
-            initial: false,
             tooltip: "tooltip",
             trueValue: true,
             falseValue: false,
@@ -92,17 +85,11 @@ const schema = z.object({
         label: "group",
         description: "description",
         type: "group",
-        initial: {
-            url: "",
-            number: 1,
-            checkbox: false,
-        },
         tooltip: "tooltip",
-        class: "col-span-full", // self
-        // groupClass: "flex flex-col", // children container
+        class: "col-span-full",
     }),
     list: formField(z.object({
-        text: formField(z.string(), {
+        text: formField(z.string().min(2), {
             label: "text",
             description: "description",
             type: "text",
@@ -117,29 +104,22 @@ const schema = z.object({
             initial: "",
             tooltip: "tooltip",
         }),
-    }).array(), {
+    }).array().max(2), {
         label: "add",
-        description: "description",
+        description: "Max 2 elements",
         type: "add",
-        initial: [],
-        element: {
-            text: "",
-            date: ""
-        },
         tooltip: "tooltip"
     }),
     number: formField(z.number().int().min(1).max(5), {
         label: "number",
         description: "Must be between 1 & 5",
         type: "number",
-        initial: 1,
         tooltip: "tooltip",
     }),
     date: formField(z.string().date(), {
         label: "date",
         description: "description",
         type: "date",
-        initial: "",
         tooltip: "tooltip",
     }),
     password: formField(z.string(), {
@@ -147,15 +127,13 @@ const schema = z.object({
         description: "description",
         type: "password",
         placeholder: "placeholder",
-        initial: "",
         tooltip: "tooltip",
     }),
     search: formField(z.string(), {
         label: "search",
         description: "description",
         type: "search",
-        placeholder: "Search...",
-        initial: "",
+        placeholder: "placeholder",
         tooltip: "tooltip",
         // @ts-ignore
         listQuery: async (s: string) => generateOptions(10, "long").filter(o => o.label.toLowerCase().includes(s.toLowerCase())),
@@ -164,7 +142,6 @@ const schema = z.object({
         label: "range",
         description: "Must be between 0 & 6, step size 2",
         type: "range",
-        initial: 0,
         tooltip: "tooltip",
     }),
     multirange: formField(z.number().int().array(), {
@@ -178,7 +155,6 @@ const schema = z.object({
         label: "rating",
         description: "description",
         type: "rating",
-        initial: 1,
         tooltip: "tooltip",
         icon: "number"
     }),
@@ -186,7 +162,6 @@ const schema = z.object({
         label: "tags",
         description: "description",
         type: "tags",
-        initial: [],
         tooltip: "tooltip",
         placeholder: "placeholder",
     }),
@@ -210,7 +185,7 @@ const registry: Registry = {
     },
 };
 
-const { formData, validity, error, isValid } = useVtForm(schema);
+const { formData, formErrors, error, isValid } = useVtForm(schema);
 </script>
 
 <template>
@@ -219,6 +194,6 @@ const { formData, validity, error, isValid } = useVtForm(schema);
     <pre>formData: {{ formData }}</pre>
     <pre>isValid: {{ isValid }}</pre>
     <pre>error: {{ error }}</pre>
-    <pre>validity: {{ validity }}</pre>
+    <pre>formErrors: {{ formErrors }}</pre>
     <!-- <pre>{{ schema.shape }}</pre> -->
 </template>
