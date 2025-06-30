@@ -156,3 +156,5 @@ export type StepConfig = StepperStepConfig | GroupStepConfig;
 export type FormError = Omit<z.ZodIssue, "path"> & { path: string };
 
 export const formErrorsKey = Symbol() as InjectionKey<ComputedRef<FormError[]>>;
+
+export const visitedKey = Symbol() as InjectionKey<(key: string, value?: -1 | 0 | 1) => boolean | void>;

@@ -13,6 +13,13 @@ const props = defineProps<{
 
 const model = defineModel<number | number[]>();
 
+const emit = defineEmits<{
+    clear: [];
+    focus: [];
+    blur: [];
+    input: [string];
+}>();
+
 const modelArray = computed({
     get: () => model.value ? (Array.isArray(model.value) ? model.value : [model.value]) : [0],
     set: (val: number[]) => model.value = val.length === 1 ? val[0] : val,
@@ -20,5 +27,5 @@ const modelArray = computed({
 </script>
 
 <template>
-    <Slider v-model="modelArray" :min="props.min" :max="props.max" :step="props.step" :class="cn('px-2 pt-2 pb-6', props.class)" />
+    <Slider v-model="modelArray" :min="props.min" :max="props.max" :step="props.step" :class="cn('px-2 pt-2 pb-6', props.class)" @blur="emit('blur')" />
 </template>

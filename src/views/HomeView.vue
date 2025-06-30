@@ -108,6 +108,16 @@ const schema = z.object({
         label: "add",
         description: "Max 2 elements",
         type: "add",
+        initial: [
+            {
+                text: "",
+                date: "",
+            },
+            {
+                text: "",
+                date: "",
+            },
+        ],
         tooltip: "tooltip"
     }),
     number: formField(z.number().int().min(1).max(5), {
@@ -185,15 +195,24 @@ const registry: Registry = {
     },
 };
 
-const { formData, formErrors, error, isValid } = useVtForm(schema);
+const initialState = {
+    text: "initial state value",
+    extras: "extra data"
+}
+
+const { formData, formErrors, error, isValid, visited, formState } = useVtForm(schema, {
+    initialState
+});
 </script>
 
 <template>
     <FormBuilder v-model="formData" :schema="schema" :registry="registry" class="grid grid-cols-2 gap-3" />
     <Button :disabled="!isValid">Submit</Button>
+    <pre>formState: {{ formState }}</pre>
+    <pre>visited: {{ visited }}</pre>
     <pre>formData: {{ formData }}</pre>
     <pre>isValid: {{ isValid }}</pre>
-    <pre>error: {{ error }}</pre>
+    <!-- <pre>error: {{ error }}</pre> -->
     <pre>formErrors: {{ formErrors }}</pre>
     <!-- <pre>{{ schema.shape }}</pre> -->
 </template>

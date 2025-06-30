@@ -32,13 +32,13 @@ const emit = defineEmits<{
                 :placeholder="props.placeholder || 'Enter tags...'"
                 @focus="focus = true; emit('focus')"
                 @blur="focus = false; emit('blur')"
-                class="px-10 h-9"
+                class="w-full px-10 h-9"
             />
             <span class="absolute end-0 inset-y-0 flex items-center justify-center">
                 <Button size="icon" variant="link" class="text-muted-foreground hover:text-foreground" @click="emit('clear')" tabindex="0"><X class="size-4" /></Button>
             </span>
         </div>
-        <div class="flex flex-row flex-wrap w-full gap-1 p-1.5">
+        <div :class="`flex flex-row flex-wrap w-full gap-1 ${model && model.length > 0 ? 'p-1.5' : ''}`">
             <TagsInputItem v-for="item in model" :key="item" :value="item">
                 <TagsInputItemText />
                 <TagsInputItemDelete class="cursor-pointer" />
