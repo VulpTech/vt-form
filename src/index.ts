@@ -2,6 +2,8 @@ import "./assets/index.css";
 
 import ComboSelect from "./components/ComboSelect.vue";
 import CustomInput from "./components/CustomInput.vue";
+import CustomCheckbox from "./components/CustomCheckbox.vue";
+import CustomSwitch from "./components/CustomSwitch.vue";
 import CustomTooltip from "./components/CustomTooltip.vue";
 import DateInput from "./components/DateInput.vue";
 import FormBuilder from "./components/FormBuilder.vue";
@@ -21,6 +23,8 @@ export * from "./types";
 export {
     ComboSelect,
     CustomInput,
+    CustomCheckbox,
+    CustomSwitch,
     CustomTooltip,
     DateInput,
     FormBuilder,

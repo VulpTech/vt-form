@@ -22,6 +22,7 @@ const schema = z.object({
         resetValue: "",
         placeholder: "placeholder",
         tooltip: "tooltip",
+        emptyValue: "",
     }),
     textOpt: formField(z.string().optional(), {
         label: "text optional",
@@ -39,6 +40,7 @@ const schema = z.object({
         tooltip: "tooltip",
         multiple: true,
         hideSearch: true,
+        emptyValue: []
     }),
     radio: formField(z.string(), {
         label: "radio",
@@ -55,11 +57,19 @@ const schema = z.object({
         class: "col-span-full",
         tooltip: "tooltip",
     }),
+    literal: formField(z.object({
+        key: z.literal("value")
+    }), {
+        type: "hidden",
+        initial: {
+            key: "value"
+        },
+    }),
     object: formField(z.object({
-        // literal: formField(z.literal("literal"), {
-        //     type: "hidden",
-        //     initial: "literal",
-        // }),
+        literal: formField(z.literal("literal"), {
+            type: "hidden",
+            initial: "literal",
+        }),
         url: formField(z.string().url(), {
             label: "url",
             description: "description",
@@ -73,13 +83,14 @@ const schema = z.object({
             type: "number",
             tooltip: "tooltip",
         }),
-        checkbox: formField(z.boolean(), {
+        checkbox: formField(z.string(), {
             label: "checkbox",
             description: "description",
             type: "checkbox",
             tooltip: "tooltip",
-            trueValue: true,
-            falseValue: false,
+            trueValue: "yes",
+            falseValue: "no",
+            emptyValue: "no"
         }),
     }), {
         label: "group",
@@ -89,7 +100,7 @@ const schema = z.object({
         class: "col-span-full",
     }),
     list: formField(z.object({
-        text: formField(z.string().min(2), {
+        text: formField(z.string(), {
             label: "text",
             description: "description",
             type: "text",
@@ -104,20 +115,20 @@ const schema = z.object({
             initial: "",
             tooltip: "tooltip",
         }),
-    }).array().max(2), {
+    }).array(), {
         label: "add",
         description: "Max 2 elements",
         type: "add",
-        initial: [
-            {
-                text: "",
-                date: "",
-            },
-            {
-                text: "",
-                date: "",
-            },
-        ],
+        // initial: [
+        //     {
+        //         text: "",
+        //         date: "",
+        //     },
+        //     {
+        //         text: "",
+        //         date: "",
+        //     },
+        // ],
         tooltip: "tooltip"
     }),
     number: formField(z.number().int().min(1).max(5), {
@@ -208,11 +219,11 @@ const { formData, formErrors, error, isValid, visited, formState } = useVtForm(s
 <template>
     <FormBuilder v-model="formData" :schema="schema" :registry="registry" class="grid grid-cols-2 gap-3" />
     <Button :disabled="!isValid">Submit</Button>
-    <pre>formState: {{ formState }}</pre>
-    <pre>visited: {{ visited }}</pre>
+    <!-- <pre>formState: {{ formState }}</pre> -->
+    <!-- <pre>visited: {{ visited }}</pre> -->
     <pre>formData: {{ formData }}</pre>
-    <pre>isValid: {{ isValid }}</pre>
+    <!-- <pre>isValid: {{ isValid }}</pre> -->
     <!-- <pre>error: {{ error }}</pre> -->
-    <pre>formErrors: {{ formErrors }}</pre>
+    <!-- <pre>formErrors: {{ formErrors }}</pre> -->
     <!-- <pre>{{ schema.shape }}</pre> -->
 </template>

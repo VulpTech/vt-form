@@ -18,23 +18,37 @@ const props = defineProps<{
 }>();
 
 const shape = getZodSchema(props.field).shape;
+const nonHiddenKeys = Object.keys(shape).filter(k => shape[k].metadata.type !== "hidden");
 
 const model = defineModel<z.infer<typeof props.field>>();
 
-const data = ref(model.value || Object.keys(shape).reduce((obj, key) => {
-    obj[key] = undefined;
-    return obj;
-}, {} as Record<string, any>));
+function createData() {
+    return Object.keys(shape).reduce((obj, key) => {
+        obj[key] = shape[key].metadata.type === "hidden" ? shape[key].metadata.initial : undefined;
+        return obj;
+    }, {} as Record<string, any>);
+}
+
+const data = ref(model.value || createData());
 
 watch(data, (newValue) => {
-    model.value = newValue;
+    if (newValue !== undefined) {
+        const emptyObj = Object.entries(newValue).filter(([k, v]) => nonHiddenKeys.includes(k)).every(([k, v]) => v === undefined);
+        if (emptyObj) {
+            model.value = undefined;
+        } else {
+            model.value = newValue;
+        }
+    } else {
+        model.value = newValue;
+    }
 }, { deep: true });
 
 watch(model, (newValue) => {
     if (newValue !== undefined) {
         data.value = newValue;
     } else {
-
+        data.value = createData();
     }
 }, { deep: true });
 </script>

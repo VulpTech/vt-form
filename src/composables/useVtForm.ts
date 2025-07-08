@@ -59,11 +59,11 @@ export default function useVtForm<T extends FormSchema>(schema: T, options?: {
     }) || []);
 
     function validationState(keys?: string[]): "valid" | "incomplete" | "invalid" {
-        if ((keys !== undefined && !formErrors.value.some(e => keys.includes(e.path) || keys.map(k => `${k}.`).some(k => e.path.startsWith(k)))) || isValid.value) {
+        if ((keys !== undefined && !formErrors.value.some(e => keys.some(k => e.path === k || e.path.startsWith(k + ".")))) || isValid.value) {
             return "valid";
         } else {
-            const errorKeys = keys !== undefined ? formErrors.value.map(e => e.path).filter(p => keys?.includes(p)) : formErrors.value.map(e => e.path);
-            const visitedKeys = Object.keys(visited.value).filter(k => visited.value[k]).filter(k => errorKeys.includes(k));
+            const errorKeys = keys !== undefined ? formErrors.value.map(e => e.path).filter(p => keys.some(k => p === k || p.startsWith(k + "."))): formErrors.value.map(e => e.path);
+            const visitedKeys = Object.keys(visited.value).filter(k => visited.value[k]).filter(k => errorKeys.some(e => e === k || k.startsWith(e + ".")));
             if (visitedKeys.length === 0) {
                 return "incomplete";
             } else {
@@ -86,7 +86,7 @@ export default function useVtForm<T extends FormSchema>(schema: T, options?: {
                                 obj[fieldKey] = schema.shape[fieldKey];
                                 return obj;
                             }, {} as typeof schema.shape),
-                        valid: !formErrors.value.some(e => keys.includes(e.path) || keys.map(k => `${k}.`).some(k => e.path.startsWith(k))),
+                        valid: !formErrors.value.some(e => keys.some(k => k === e.path || e.path.startsWith(k + "."))),
                         state: validationState(keys),
                     };
                     return stepObj;

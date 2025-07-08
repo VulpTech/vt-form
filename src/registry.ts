@@ -1,8 +1,6 @@
 import * as z from "zod";
 import { type Registry } from "@/types";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Switch } from "@/components/ui/switch";
 import CustomInput from "@/components/CustomInput.vue";
 import ComboSelect from "@/components/ComboSelect.vue";
 import SearchInput from "@/components/SearchInput.vue";
@@ -14,6 +12,8 @@ import FormRange from "@/components/FormRange.vue";
 import Rating from "@/components/Rating.vue";
 import RadioInput from "@/components/RadioInput.vue";
 import TagInput from "./components/TagInput.vue";
+import CustomCheckbox from "./components/CustomCheckbox.vue";
+import CustomSwitch from "./components/CustomSwitch.vue";
 
 export const defaultRegistry: Registry = {
     text: {
@@ -64,22 +64,18 @@ export const defaultRegistry: Registry = {
         }
     },
     checkbox: {
-        component: Checkbox,
+        component: CustomCheckbox,
         props: {
-            checked: (def, meta, model) => meta.type === "checkbox" ? model.value === meta.trueValue : undefined,
+            trueValue: (def, meta, model) => meta.type === "checkbox" ? meta.trueValue : undefined,
+            falseValue: (def, meta, model) => meta.type === "checkbox" ? meta.falseValue : undefined,
         },
-        events: {
-            "update:checked": (def, meta, model) => ((checked: boolean) => meta.type === "checkbox" ? (model.value = checked ? meta.trueValue : meta.falseValue) : undefined),
-        }
     },
     switch: {
-        component: Switch,
+        component: CustomSwitch,
         props: {
-            checked: (def, meta, model) => meta.type === "switch" ? model.value === meta.trueValue : undefined,
+            trueValue: (def, meta, model) => meta.type === "switch" ? meta.trueValue : undefined,
+            falseValue: (def, meta, model) => meta.type === "switch" ? meta.falseValue : undefined,
         },
-        events: {
-            "update:checked": (def, meta, model) => ((checked: boolean) => meta.type === "switch" ? (model.value = checked ? meta.trueValue : meta.falseValue) : undefined),
-        }
     },
     select: {
         component: ComboSelect,
@@ -100,6 +96,7 @@ export const defaultRegistry: Registry = {
         props: {
             fieldKey: (def, meta, model, field, fieldKey) => fieldKey,
             field: (def, meta, model, field, fieldKey) => field,
+            elementClass: (def, meta, model) => meta.type === "add" ? meta.elementClass : undefined,
         }
     },
     search: {

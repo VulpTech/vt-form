@@ -12,13 +12,72 @@ import type { StepConfig } from "../types";
 // const vertical = ref(false);
 
 const schema = z.object({
-    text: formField(z.string(), {
-        label: "text",
-        description: "description",
-        type: "text",
-        placeholder: "placeholder",
+    // text: formField(z.string(), {
+    //     label: "text",
+    //     description: "description",
+    //     type: "text",
+    //     placeholder: "placeholder",
+    //     tooltip: "tooltip",
+    //     step: "step1",
+    // }),
+    // object: formField(z.object({
+    //     text: formField(z.string(), {
+    //         label: "text",
+    //         description: "description",
+    //         type: "text",
+    //         placeholder: "placeholder",
+    //         tooltip: "tooltip",
+    //     }),
+    //     number: formField(z.number(), {
+    //         label: "number",
+    //         description: "description",
+    //         type: "number",
+    //         placeholder: "placeholder",
+    //         tooltip: "tooltip",
+    //     }),
+    //     tags: formField(z.string().array(), {
+    //         label: "tags",
+    //         description: "description",
+    //         type: "tags",
+    //         placeholder: "placeholder",
+    //         tooltip: "tooltip",
+    //     }),
+    // }), {
+    //     type: "group",
+    //     step: "step1",
+    // }),
+    list: formField(z.object({
+        text: formField(z.string().min(2), {
+            label: "text",
+            description: "description",
+            type: "text",
+            initial: "",
+            placeholder: "placeholder",
+            tooltip: "tooltip",
+        }),
+        date: formField(z.string().date(), {
+            label: "date",
+            description: "description",
+            type: "date",
+            initial: "",
+            tooltip: "tooltip",
+        }),
+    }).array().max(2), {
+        label: "add",
+        description: "Max 2 elements",
+        type: "add",
+        // initial: [
+        //     {
+        //         text: "",
+        //         date: "",
+        //     },
+        //     {
+        //         text: "",
+        //         date: "",
+        //     },
+        // ],
         tooltip: "tooltip",
-        step: "step1",
+        step: "step1"
     }),
     number: formField(z.number(), {
         label: "number",
@@ -36,40 +95,11 @@ const schema = z.object({
         tooltip: "tooltip",
         step: "step3",
     }),
-    object: formField(z.object({
-        text: formField(z.string(), {
-            label: "text",
-            description: "description",
-            type: "text",
-            placeholder: "placeholder",
-            tooltip: "tooltip",
-            step: "step1",
-        }),
-        number: formField(z.number(), {
-            label: "number",
-            description: "description",
-            type: "number",
-            placeholder: "placeholder",
-            tooltip: "tooltip",
-            step: "step2",
-        }),
-        tags: formField(z.string().array(), {
-            label: "tags",
-            description: "description",
-            type: "tags",
-            placeholder: "placeholder",
-            tooltip: "tooltip",
-            step: "step3",
-        }),
-    }), {
-        type: "group",
-        step: "step1",
-    })
 });
 
 const stepsConfig: StepConfig = {
     type: "stepper",
-    orientation: "horizontal",
+    orientation: "vertical",
     steps: [
         {
             id: "step1",
@@ -90,11 +120,13 @@ const stepsConfig: StepConfig = {
     ],
 };
 
-const { formData, formErrors, error, isValid, steps } = useVtForm(schema, { steps: stepsConfig });
+const stepIndex = ref(1);
+
+const { formData, formErrors, error, isValid, steps, visited } = useVtForm(schema, { steps: stepsConfig });
 </script>
 
 <template>
-    <FormBuilder v-model="formData" :schema="schema" :steps="steps" class="">
+    <FormBuilder v-model="formData" :schema="schema" :steps="steps" v-model:step="stepIndex" class="">
         <!-- <template #left-buttons-first>first slot</template>
         <template #left-buttons>left btn slot</template>
         <template #right-buttons>right btn slot</template> -->
@@ -102,8 +134,9 @@ const { formData, formErrors, error, isValid, steps } = useVtForm(schema, { step
             <Button :disabled="!isValid">Submit</Button>
         </template>
     </FormBuilder>
-    <!-- <pre>steps: {{ steps }}</pre> -->
+    <pre>steps: {{ steps }}</pre>
     <pre>formData: {{ formData }}</pre>
+    <pre>visited: {{ visited }}</pre>
     <pre>isValid: {{ isValid }}</pre>
     <pre>error: {{ error }}</pre>
     <pre>formErrors: {{ formErrors }}</pre>

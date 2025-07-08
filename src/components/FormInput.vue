@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, type ComputedRef, inject } from "vue";
+import { computed, type ComputedRef, inject, watchEffect } from "vue";
 import * as z from "zod";
 import { CircleHelp } from "lucide-vue-next";
 import { formErrorsKey, type InputSchema, type Registry, type FormError, visitedKey } from "@/types";
@@ -27,7 +27,7 @@ const isVisited = inject(visitedKey) as (key: string, value?: -1 | 0 | 1) => boo
 
 const model = defineModel<z.infer<typeof fieldUnwrapped>>();
 
-const errorMessages = computed(() => formErrors.value.filter(e => e.path === props.fieldPath));
+const errorMessages = computed(() => formErrors.value.filter(e => e.path === props.fieldPath || props.fieldPath.startsWith(e.path + ".")));
 
 const mergedRegistry = computed(() => {
     return {...defaultRegistry, ...props.registry};
@@ -60,9 +60,19 @@ const computedEvents = computed(() => {
 });
 
 function reset() {
-    model.value = fieldMeta.resetValue !== undefined ? fieldMeta.resetValue : fieldMeta.initial;
-    isVisited(props.fieldPath, 0);
+    if (fieldMeta.type !== "hidden") {
+        model.value = fieldMeta.resetValue !== undefined ? fieldMeta.resetValue : fieldMeta.initial;
+        isVisited(props.fieldPath, 0);
+    }
 }
+
+watchEffect(() => {
+    if (fieldMeta.type !== "hidden" && fieldMeta.emptyValue !== undefined) {
+        if (JSON.stringify(model.value) == JSON.stringify(fieldMeta.emptyValue)) {
+            model.value = undefined;
+        }
+    }
+});
 </script>
 
 <template>
@@ -81,7 +91,7 @@ function reset() {
                 v-on="computedEvents"
                 v-model="model"
                 :placeholder="fieldMeta.placeholder"
-                :class="errorMessages.length > 0 && isVisited(props.fieldPath) ? '!border-destructive' : ''"
+                :class="cn(fieldMeta.class, errorMessages.length > 0 && isVisited(props.fieldPath) ? '!border-destructive' : '')"
                 :disabled="disabled"
                 :registry="props.registry"
                 :fieldPath="['group', 'add'].includes(fieldMeta.type) ? props.fieldPath : undefined"

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { type HTMLAttributes, onMounted, ref } from "vue";
+import { type HTMLAttributes, onMounted, ref, watch } from "vue";
 import * as z from "zod";
 import { Check, Circle, Dot, ChevronLeft, ChevronRight, X, CircleDashed } from "lucide-vue-next";
 import { cn } from "@/lib/utils";
@@ -20,11 +20,20 @@ const props = defineProps<{
 
 const model = defineModel<z.infer<typeof props.schema> | undefined>({ required: true });
 
-const stepIndex = ref(1);
+const stepIndex = defineModel("step", { default: 1 });
+
 const stepVisited = ref(props.steps?.steps.map((_, i) => i + 1).reduce((obj, curr, i) => {
-    obj[curr] = i === 0 ? true : false;
+    obj[curr] = i === stepIndex.value - 1 ? true : false;
     return obj;
 }, {} as Record<number, boolean>));
+
+if (props.steps) {
+    watch(stepIndex, (newValue) => {
+        if (stepVisited.value && !stepVisited.value[newValue]) {
+            stepVisited.value[newValue] = true;
+        }
+    });
+}
 </script>
 
 <template>
@@ -38,7 +47,6 @@ const stepVisited = ref(props.steps?.steps.map((_, i) => i + 1).reduce((obj, cur
                 :linear="props.steps.linear ?? false"
                 v-slot="{ nextStep, prevStep, isFirstStep, isLastStep }"
                 :class="cn('flex flex-col gap-2 pt-1 w-full', props.steps.orientation === 'horizontal' ? '' : 'pl-1', props.class)"
-                @update:modelValue="props.steps && $event && stepVisited && !stepVisited[$event] ? stepVisited[$event] = true : undefined"
             >
                 <div :class="`flex ${props.steps.orientation === 'horizontal' ? 'flex-col items-center gap-4' : 'flex-row gap-8'}`">
                     <div :class="`flex gap-4 ${props.steps.orientation === 'horizontal' ? 'w-full flex-row justify-around' : 'flex-col'}`">
