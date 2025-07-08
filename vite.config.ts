@@ -15,7 +15,7 @@ export default defineConfig({
             fileName: "vt-form"
         },
         rollupOptions: {
-            external: ["vue"],
+            external: ["vue", "vue-router"],
             output: {
                 globals: {
                     vue: "Vue"

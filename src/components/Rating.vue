@@ -17,7 +17,14 @@ const props = withDefaults(defineProps<{
     step: 1,
 });
 
-const model = defineModel<number>({ required: true });
+const model = defineModel<number>();
+
+const emit = defineEmits<{
+    clear: [];
+    focus: [];
+    blur: [];
+    input: [string];
+}>();
 
 function* range(start: number, stop: number, step: number = 1) {
     if (stop == null) {
@@ -34,8 +41,8 @@ function* range(start: number, stop: number, step: number = 1) {
 
 <template>
     <div :class="cn('flex flex-row items-center gap-1', props.class)">
-        <Button v-for="value of range(props.min, props.max + 1, props.step)" :variant="value <= model ? 'default' : 'secondary'" size="icon" @click="model = value">
-            <Star v-if="props.icon === 'star'" :class="`size-4 ${value <= model ? 'fill-primary-foreground' : ''}`" />
+        <Button v-for="value of range(props.min, props.max + 1, props.step)" :variant="model && value <= model ? 'default' : 'secondary'" size="icon" @click="model = value" @blur="emit('blur')">
+            <Star v-if="props.icon === 'star'" :class="`size-4 ${model && value <= model ? 'fill-primary-foreground' : ''}`" />
             <template v-else>{{ value }}</template>
         </Button>
     </div>

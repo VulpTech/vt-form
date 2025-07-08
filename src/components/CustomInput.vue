@@ -12,7 +12,7 @@ const props = defineProps<{
     class?: HTMLAttributes["class"];
 }>();
 
-const model = defineModel<string>({ required: true });
+const model = defineModel<string>();
 
 const emit = defineEmits<{
     clear: [];

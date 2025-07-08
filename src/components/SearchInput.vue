@@ -22,7 +22,7 @@ const props = defineProps<{
     class?: HTMLAttributes["class"];
 }>();
 
-const model = defineModel<any>({ required: true });
+const model = defineModel<any>();
 
 const open = ref(false);
 const searchTerm = ref("");
@@ -105,9 +105,9 @@ watch(model, (newValue) => {
             <DialogTrigger as-child>
                 <Button variant="outline" :class="cn('justify-start w-full pr-10', props.class)">
                     <Search class="size-4 text-muted-foreground mr-2" />
-                    <span :class="`overflow-x-hidden ${Object.keys(model).length === 0 ? 'text-muted-foreground' : ''}`">
+                    <span :class="`overflow-x-hidden ${model === undefined || Object.keys(model).length === 0 ? 'text-muted-foreground' : ''}`">
                         <template v-if="selectedItem !== null">{{ displayResult(selectedItem) }}</template>
-                        <template v-else>{{ placeholder || "Search" }}</template>
+                        <template v-else>{{ placeholder || "Search..." }}</template>
                     </span>
                 </Button>
             </DialogTrigger>
@@ -116,8 +116,14 @@ watch(model, (newValue) => {
                     <DialogTitle>Search</DialogTitle>
                     <DialogDescription class="hidden"></DialogDescription>
                 </DialogHeader>
-                <div>
-                    <Input type="search" placeholder="Search..." v-model="searchTerm" @input="runListQuery" autofocus />
+                <div class="relative w-full items-center">
+                    <span class="absolute start-0 inset-y-0 flex items-center justify-center">
+                        <Search class="size-4 text-muted-foreground ml-2" />
+                    </span>
+                    <Input type="search" placeholder="Search..." class="px-10" v-model="searchTerm" @input="runListQuery" autofocus />
+                    <span class="absolute end-0 inset-y-0 flex items-center justify-center">
+                        <Button size="icon" variant="link" class="text-muted-foreground hover:text-foreground" @click="searchTerm = ''"><X class="size-4" /></Button>
+                    </span>
                 </div>
                 <div v-if="searchTerm !== ''" class="flex flex-col gap-1">
                     <div v-if="loading" class="flex flex-col gap-2">

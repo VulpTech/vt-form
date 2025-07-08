@@ -1,217 +1,30 @@
 <script lang="ts" setup>
-import * as z from "zod";
-import useVtForm from "./composables/useVtForm";
-import { formField } from "./form";
-import FormBuilder from "./components/FormBuilder.vue";
+import { RouterView, RouterLink, useRoute } from "vue-router";
 import { Button } from "./components/ui/button";
-import { type Registry } from "./types";
-import MyComponent from "./components/MyComponent.vue";
 
-const searchList = [
+const route = useRoute();
+
+const links = [
     {
-        label: "Option 1",
-        value: "1",
+        title: "Home",
+        path: "/",
     },
     {
-        label: "Option 2",
-        value: "2",
-    },
-    {
-        label: "Option 3",
-        value: "3",
+        title: "Steps",
+        path: "/steps",
     },
 ];
-
-const schema = z.object({
-    text: formField(z.string().min(10), {
-        label: "text",
-        description: "description",
-        type: "text",
-        initial: "initial",
-        resetValue: "",
-        placeholder: "placeholder",
-        tooltip: "tooltip",
-    }),
-    textOpt: formField(z.string().optional(), {
-        label: "text optional",
-        description: "description",
-        type: "text",
-        initial: "x",
-        placeholder: "placeholder",
-        tooltip: "tooltip",
-    }),
-    select: formField(z.string().array(), {
-        label: "select",
-        description: "description",
-        type: "select",
-        placeholder: "placeholder",
-        initial: [],
-        options: [{ label: "label 1", value: "value 1" }, { label: "label 2", value: "value 2" }],
-        tooltip: "tooltip",
-        multiple: true,
-    }),
-    textarea: formField(z.string(), {
-        label: "textarea",
-        description: "description",
-        type: "textarea",
-        initial: "",
-        placeholder: "placeholder",
-        class: "col-span-full",
-        tooltip: "tooltip",
-    }),
-    object: formField(z.object({
-        // literal: formField(z.literal("literal"), {
-        //     type: "hidden",
-        //     initial: "literal",
-        // }),
-        url: formField(z.string().url(), {
-            label: "url",
-            description: "description",
-            type: "url",
-            initial: "",
-            placeholder: "placeholder",
-            tooltip: "tooltip",
-        }),
-        number: formField(z.number().int().min(1).max(5), {
-            label: "number",
-            description: "description",
-            type: "number",
-            initial: 1,
-            tooltip: "tooltip",
-        }),
-        checkbox: formField(z.boolean(), {
-            label: "checkbox",
-            description: "description",
-            type: "checkbox",
-            initial: false,
-            tooltip: "tooltip",
-            trueValue: true,
-            falseValue: false,
-        }),
-    }), {
-        label: "group",
-        description: "description",
-        type: "group",
-        initial: {
-            url: "",
-            number: 1,
-            checkbox: false,
-        },
-        tooltip: "tooltip",
-        class: "col-span-full", // self
-        // groupClass: "flex flex-col", // children container
-    }),
-    list: formField(z.object({
-        text: formField(z.string(), {
-            label: "text",
-            description: "description",
-            type: "text",
-            initial: "",
-            placeholder: "placeholder",
-            tooltip: "tooltip",
-        }),
-        date: formField(z.string().date(), {
-            label: "date",
-            description: "description",
-            type: "date",
-            initial: "",
-            tooltip: "tooltip",
-        }),
-    }).array(), {
-        label: "add",
-        description: "description",
-        type: "add",
-        initial: [],
-        element: {
-            text: "",
-            date: ""
-        },
-        tooltip: "tooltip"
-    }),
-    number: formField(z.number().int().min(1).max(5), {
-        label: "number",
-        description: "description",
-        type: "number",
-        initial: 1,
-        tooltip: "tooltip",
-    }),
-    date: formField(z.string().date(), {
-        label: "date",
-        description: "description",
-        type: "date",
-        initial: "",
-        tooltip: "tooltip",
-    }),
-    password: formField(z.string(), {
-        label: "password",
-        description: "description",
-        type: "password",
-        placeholder: "placeholder",
-        initial: "",
-        tooltip: "tooltip",
-    }),
-    search: formField(z.string(), {
-        label: "search",
-        description: "description",
-        type: "search",
-        placeholder: "Search...",
-        initial: "",
-        tooltip: "tooltip",
-        listQuery: async (s: string) => searchList.filter(o => o.label.toLowerCase().includes(s.toLowerCase())),
-    }),
-    range: formField(z.number().int().min(0).max(6).step(2), {
-        label: "range",
-        description: "description",
-        type: "range",
-        initial: 0,
-        tooltip: "tooltip",
-    }),
-    multirange: formField(z.number().int().array(), {
-        label: "multirange",
-        description: "description",
-        type: "range",
-        initial: [0, 100],
-        tooltip: "tooltip",
-    }),
-    rating: formField(z.number().int().min(1).max(5), {
-        label: "rating",
-        description: "description",
-        type: "rating",
-        initial: 1,
-        tooltip: "tooltip",
-        icon: "number"
-    }),
-    // external input type - use type any for now
-    custom: formField<z.ZodTypeAny, any>(z.string(), {
-        label: "custom",
-        description: "description",
-        type: "custom",
-        initial: "title",
-        tooltip: "tooltip",
-    }),
-});
-
-// user-provided component registry
-const registry: Registry = {
-    custom: {
-        component: MyComponent,
-        props: {
-            title: (def, meta, model) => model.value,
-        },
-    },
-};
-
-const { formData, validity, error, isValid } = useVtForm(schema);
 </script>
 
 <template>
-    <div class="p-4">
-        <p>error:{{ error }}</p>
-        <FormBuilder v-model="formData" :schema="schema" :registry="registry" class="grid grid-cols-2 gap-3" />
-        <Button :disabled="!isValid">Submit</Button>
-        <p>isValid: {{ isValid }}</p>
-        <pre>{{ schema.shape }}</pre>
-        <pre>validity:{{ validity }}</pre>
-        <pre>formData: {{ formData }}</pre>
+    <div class="min-h-dvh">
+        <nav class="px-4 flex flex-row gap-2 items-center">
+            <Button v-for="link in links" :variant="route.path === link.path ? 'default' : 'secondary'" as-child>
+                <RouterLink :to="link.path">{{ link.title }}</RouterLink>
+            </Button>
+        </nav>
+        <div class="p-4 flex flex-col items-start gap-3">
+            <RouterView></RouterView>
+        </div>
     </div>
 </template>

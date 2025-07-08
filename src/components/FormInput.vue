@@ -1,33 +1,37 @@
 <script lang="ts" setup>
-import { computed, watch } from "vue";
+import { computed, type ComputedRef, inject, watchEffect } from "vue";
 import * as z from "zod";
 import { CircleHelp } from "lucide-vue-next";
-import type { InputSchema, Registry } from "@/types";
+import { formErrorsKey, type InputSchema, type Registry, type FormError, visitedKey } from "@/types";
 import { getZodSchema } from "@/form";
 import { Label } from "@/components/ui/label";
 import CustomTooltip from "@/components/CustomTooltip.vue";
-import { useVtField } from "@/composables/useVtField";
 import { cn } from "@/lib/utils";
 import { defaultRegistry } from "@/registry";
 
 const props = defineProps<{
     fieldKey: string;
     field: InputSchema;
+    fieldPath: string;
     disabled?: boolean;
     registry?: Registry;
 }>();
 
-const fieldUnwrapped = props.field.unwrap();
-
-const model = defineModel<z.infer<typeof fieldUnwrapped>>({ required: true });
-const { errorMessage, required, validate, resetField } = useVtField(props.field, model);
 const fieldDef = getZodSchema(props.field)._def;
-
+const fieldUnwrapped = props.field.unwrap();
 const fieldMeta = props.field.metadata;
+const required = !fieldUnwrapped.isOptional();
+
+const formErrors = inject(formErrorsKey) as ComputedRef<FormError[]>;
+const isVisited = inject(visitedKey) as (key: string, value?: -1 | 0 | 1) => boolean | void;
+
+const model = defineModel<z.infer<typeof fieldUnwrapped>>();
+
+const errorMessages = computed(() => formErrors.value.filter(e => e.path === props.fieldPath || props.fieldPath.startsWith(e.path + ".")));
 
 const mergedRegistry = computed(() => {
     return {...defaultRegistry, ...props.registry};
-})
+});
 
 const registryItem = computed(() => {
     return mergedRegistry.value[fieldMeta.type] || mergedRegistry.value.default;
@@ -55,14 +59,25 @@ const computedEvents = computed(() => {
     }
 });
 
-watch(model, () => {
-    validate();
+function reset() {
+    if (fieldMeta.type !== "hidden") {
+        model.value = fieldMeta.resetValue !== undefined ? fieldMeta.resetValue : fieldMeta.initial;
+        isVisited(props.fieldPath, 0);
+    }
+}
+
+watchEffect(() => {
+    if (fieldMeta.type !== "hidden" && fieldMeta.emptyValue !== undefined) {
+        if (JSON.stringify(model.value) == JSON.stringify(fieldMeta.emptyValue)) {
+            model.value = undefined;
+        }
+    }
 });
 </script>
 
 <template>
     <div v-if="fieldMeta.type !== 'hidden'" :class="cn('form-input flex flex-col gap-1', fieldMeta.class)">
-        <div :class="`flex gap-1 ${['checkbox', 'switch', 'radio'].includes(fieldMeta.type) ? 'flex-row-reverse items-center justify-end' : 'flex-col'}`">
+        <div :class="`flex gap-1 ${['checkbox', 'switch'].includes(fieldMeta.type) ? 'flex-row-reverse items-center justify-end' : 'flex-col'}`">
             <div class="flex flex-row gap-1 items-center">
                 <Label v-if="fieldMeta.label" :for="props.fieldKey">{{ fieldMeta.label }}<span v-if="required" class="text-destructive"> *</span></Label>
                 <CustomTooltip v-if="fieldMeta.tooltip">
@@ -70,22 +85,24 @@ watch(model, () => {
                     {{ fieldMeta.tooltip }}
                 </CustomTooltip>
             </div>
-            <!-- @vue-ignore -->
             <component :is="registryItem.component"
                 :id="props.fieldKey"
                 v-bind="computedProps"
                 v-on="computedEvents"
                 v-model="model"
                 :placeholder="fieldMeta.placeholder"
-                :class="errorMessage ? '!border-destructive' : ''"
+                :class="cn(fieldMeta.class, errorMessages.length > 0 && isVisited(props.fieldPath) ? '!border-destructive' : '')"
                 :disabled="disabled"
                 :registry="props.registry"
-                @blur="validate"
-                @clear="resetField"
+                :fieldPath="['group', 'add'].includes(fieldMeta.type) ? props.fieldPath : undefined"
+                @clear="reset"
+                @blur="isVisited(props.fieldPath, 1)"
             />
             <Label v-if="fieldMeta.type === 'switch' && fieldMeta.falseLabel">{{ fieldMeta.falseLabel }}</Label>
         </div>
         <p v-if="fieldMeta.description" :id="`${props.fieldKey}-desc`" class="text-sm text-muted-foreground">{{ fieldMeta.description }}</p>
-        <div v-if="errorMessage" :name="props.fieldKey" class="text-destructive">{{ errorMessage }}</div>
+        <div v-if="errorMessages.length > 0 && isVisited(props.fieldPath)" :name="props.fieldKey" class="text-destructive">
+            <span v-for="message in errorMessages">{{ message.message }}</span>
+        </div>
     </div>
 </template>
