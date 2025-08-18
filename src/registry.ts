@@ -112,6 +112,7 @@ export const defaultRegistry: Registry = {
         props: {
             fieldKey: (def, meta, model, field, fieldKey) => fieldKey,
             field: (def, meta, model, field, fieldKey) => field,
+            display: (def, meta, model, field, fieldKey) => meta.type === "group" ? meta.display : undefined,
         }
     },
     date: {

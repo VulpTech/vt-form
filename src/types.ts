@@ -29,6 +29,7 @@ export const inputMetaSchema = z.discriminatedUnion("type", [
         initial: z.any().optional(),
         resetValue: z.any().optional(),
         emptyValue: z.any().optional(),
+        display: z.enum(["card", "div"]).optional(),
     }),
     z.object({
         type: z.literal("number"),

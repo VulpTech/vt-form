@@ -18,7 +18,7 @@ const props = defineProps<{
     placeholder?: string;
 }>();
 
-const model = defineModel<string>({ required: true });
+const model = defineModel<string>();
 
 const value = computed({
     get: () => model.value ? parseDate(model.value) : undefined,

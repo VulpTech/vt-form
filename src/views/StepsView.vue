@@ -62,20 +62,20 @@ const schema = z.object({
             initial: "",
             tooltip: "tooltip",
         }),
-    }).array().max(2), {
+    }).array(), {
         label: "add",
         description: "Max 2 elements",
         type: "add",
-        // initial: [
-        //     {
-        //         text: "",
-        //         date: "",
-        //     },
-        //     {
-        //         text: "",
-        //         date: "",
-        //     },
-        // ],
+        initial: [
+            {
+                text: "",
+                date: "",
+            },
+            // {
+            //     text: "",
+            //     date: "",
+            // },
+        ],
         tooltip: "tooltip",
         step: "step1"
     }),
@@ -99,23 +99,58 @@ const schema = z.object({
 
 const stepsConfig: StepConfig = {
     type: "stepper",
+    // orientation: "horizontal",
     orientation: "vertical",
     steps: [
         {
             id: "step1",
-            label: "Step 1",
+            label: "Step sldjfhlksdjf lksjdf slkdjf sldkfs ldkfjl 1",
             description: "Description of step 1",
-            // class: "grid grid-cols-2 gap-2"
         },
         {
             id: "step2",
             label: "Step 2",
-            description: "Description of step 2 Lorem ipsum dolor sit amet consectetur adipisicing elit."
+            description: "Description of step 2",
         },
         {
             id: "step3",
-            label: "Step 3",
-            description: "Description of step 3"
+            label: "Step sldjfhlksdjf lksf 3",
+            description: "Description of step 3",
+        },
+        {
+            id: "step4",
+            label: "Step sldjfhlksdjf lksjdf slkdjf s 4",
+            description: "Description of step 4",
+        },
+        {
+            id: "step5",
+            label: "Step s  5",
+            description: "Description of step 5",
+        },
+        {
+            id: "step6",
+            label: "Step sldjfhlksdjf  sldkfs ldkfjlkjf lksdjf lsdjfls df 6",
+            description: "Description of step 6",
+        },
+        {
+            id: "step7",
+            label: "Step sldjfhlksdjf lksjdf sl 7",
+            description: "Description of step 7",
+        },
+        {
+            id: "step8",
+            label: "Step sldjfhlksdjf lksjdf slkdjfjlkjf lksdjf ls df 8",
+            description: "Description of step 8",
+        },
+        {
+            id: "step9",
+            label: "Step sllksdjf lsdjfls df 9",
+            description: "Description of step 9",
+        },
+        {
+            id: "step10",
+            label: "Step sldjfhlksd 10",
+            description: "Description of step 10",
         },
     ],
 };
@@ -134,11 +169,11 @@ const { formData, formErrors, error, isValid, steps, visited } = useVtForm(schem
             <Button :disabled="!isValid">Submit</Button>
         </template>
     </FormBuilder>
-    <pre>steps: {{ steps }}</pre>
+    <!-- <pre>steps: {{ steps }}</pre>
     <pre>formData: {{ formData }}</pre>
     <pre>visited: {{ visited }}</pre>
     <pre>isValid: {{ isValid }}</pre>
     <pre>error: {{ error }}</pre>
-    <pre>formErrors: {{ formErrors }}</pre>
+    <pre>formErrors: {{ formErrors }}</pre> -->
     <!-- <pre>{{ schema.shape }}</pre> -->
 </template>

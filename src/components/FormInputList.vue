@@ -5,7 +5,6 @@ import { Trash } from "lucide-vue-next";
 import { visitedKey, type InputSchema, type Registry } from "@/types";
 import { getZodSchema } from "@/form";
 import FormInputGroup from "@/components/FormInputGroup.vue";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -46,12 +45,12 @@ const canAdd = computed(() => {
 
 function add() {
     if (model.value === undefined) {
-        Object.keys(element).forEach(k => { // if obj array
+        Object.keys({...element}).forEach(k => { // if obj array
             isVisited(`${props.fieldPath}.0.${k}`, 0);
         });
-        model.value = [element];
+        model.value = [{...element}];
     } else {
-        Object.keys(element).forEach(k => { // if obj array
+        Object.keys({...element}).forEach(k => { // if obj array
             isVisited(`${props.fieldPath}.${model.value!.length}.${k}`, 0);
         });
         model.value.push(structuredClone(element));
@@ -60,7 +59,7 @@ function add() {
 
 function remove(index: number) {
     if (model.value !== undefined) {
-        Object.keys(element).forEach(k => { // if obj array
+        Object.keys({...element}).forEach(k => { // if obj array
             isVisited(`${props.fieldPath}.${index}.${k}`, -1);
         });
         if (model.value.length === 1) {
@@ -68,11 +67,11 @@ function remove(index: number) {
         } else {
             model.value.forEach((_, i) => {
                 if (i > index) {
-                    Object.keys(element).forEach(k => { // if obj array
+                    Object.keys({...element}).forEach(k => { // if obj array
                         const visited = isVisited(`${props.fieldPath}.${i}.${k}`);
                         isVisited(`${props.fieldPath}.${i - 1}.${k}`, visited ? 1 : 0);
                     });
-                    Object.keys(element).forEach(k => { // if obj array
+                    Object.keys({...element}).forEach(k => { // if obj array
                         isVisited(`${props.fieldPath}.${i}.${k}`, -1);
                     });
                 }
@@ -84,19 +83,25 @@ function remove(index: number) {
 </script>
 
 <template>
-    <Card :class="cn('p-6 flex flex-grow gap-6', props.class)">
+    <div :class="cn('flex flex-col flex-grow gap-3', props.class)">
         <template v-if="model">
-            <div v-for="(_, index) in model" :key="index" class="flex flex-row gap-2">
-                <FormInputGroup v-model="model[index]" :field="fieldSchema.element" :registry="props.registry" :fieldPath="`${props.fieldPath}.${index}`" :class="props.elementClass" />
-                <div v-if="!fieldSchema._def.exactLength" class="w-6 flex">
-                    <Button variant="destructive" size="sm" class="my-auto" @click="remove(index)">
-                        <Trash class="w-4 h-4" />
+            <div v-for="(_, index) in model" :key="index" class="flex flex-row gap-3">
+                <FormInputGroup v-model="model[index]" :field="fieldSchema.element" :registry="props.registry" :fieldPath="`${props.fieldPath}.${index}`" :class="props.elementClass">
+                    <Button
+                        v-if="!fieldSchema._def.exactLength"
+                        variant="link"
+                        size="icon"
+                        class="text-destructive hover:bg-destructive hover:text-destructive-foreground transition-colors"
+                        title="Delete group"
+                        @click="remove(index)"
+                    >
+                        <Trash class="size-4" />
                     </Button>
-                </div>
+                </FormInputGroup>
             </div>
         </template>
         <div v-if="canAdd">
             <Button @click="add">+ Add</Button>
         </div>
-    </Card>
+    </div>
 </template>

@@ -23,7 +23,7 @@ const links = [
                 <RouterLink :to="link.path">{{ link.title }}</RouterLink>
             </Button>
         </nav>
-        <div class="p-4 flex flex-col items-start gap-3">
+        <div class="">
             <RouterView></RouterView>
         </div>
     </div>
