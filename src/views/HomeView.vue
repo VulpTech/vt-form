@@ -104,7 +104,6 @@ const schema = z.object({
             label: "text",
             description: "description",
             type: "text",
-            initial: "",
             placeholder: "placeholder",
             tooltip: "tooltip",
         }),
@@ -112,7 +111,6 @@ const schema = z.object({
             label: "date",
             description: "description",
             type: "date",
-            initial: "",
             tooltip: "tooltip",
         }),
     }).array().max(2), {
@@ -133,6 +131,7 @@ const schema = z.object({
         description: "description",
         type: "date",
         tooltip: "tooltip",
+        yearRange: [-100, 0],
     }),
     password: formField(z.string(), {
         label: "password",
@@ -213,7 +212,7 @@ const registry: Registry = {
     custom: {
         component: MyComponent,
         props: {
-            title: (def, meta, model) => model.value,
+            title: ({ model }) => model.value,
         },
     },
 };

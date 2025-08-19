@@ -33,6 +33,7 @@ const emit = defineEmits<{
         v-model="model"
         :defaultValue="props.defaultValue"
         :format-options="{ signDisplay: props.showSign ? 'exceptZero' : undefined }"
+        :stepSnapping="false"
     >
         <div class="relative w-full items-center">
             <NumberFieldContent>

@@ -40,7 +40,7 @@ const registryItem = computed(() => {
 const computedProps = computed(() => {
     if (registryItem.value.props) {
         return Object.entries(registryItem.value.props).reduce((obj, [key, fn]) => {
-            obj[key] = fn(fieldDef, fieldMeta, model, props.field, props.fieldKey);
+            obj[key] = fn({ def: fieldDef, meta: fieldMeta, model, field: props.field, fieldKey: props.fieldKey });
             return obj;
         }, {} as Record<string, any>);
     } else {
@@ -51,7 +51,7 @@ const computedProps = computed(() => {
 const computedEvents = computed(() => {
     if (registryItem.value.events) {
         return Object.entries(registryItem.value.events).reduce((obj, [key, fn]) => {
-            obj[key] = fn(fieldDef, fieldMeta, model, props.field, props.fieldKey);
+            obj[key] = fn({ def: fieldDef, meta: fieldMeta, model, field: props.field, fieldKey: props.fieldKey });
             return obj;
         }, {} as Record<string, any>);
     } else {
