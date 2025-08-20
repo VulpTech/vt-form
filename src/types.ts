@@ -19,16 +19,24 @@ export const externalInputSchema = z.object({
 
 export const inputMetaSchema = z.discriminatedUnion("type", [
     z.object({
-        type: z.enum(["text", "url", "password", "email", "date", "tel", "textarea"]),
+        type: z.enum(["text", "url", "password", "email", "tel", "textarea"]),
         initial: z.string().optional(),
         resetValue: z.string().optional(),
         emptyValue: z.string().optional(),
+    }),
+    z.object({
+        type: z.literal("date"),
+        initial: z.string().optional(),
+        resetValue: z.string().optional(),
+        emptyValue: z.string().optional(),
+        yearRange: z.tuple([z.number().int(), z.number().int()]).optional()
     }),
     z.object({
         type: z.literal("group"),
         initial: z.any().optional(),
         resetValue: z.any().optional(),
         emptyValue: z.any().optional(),
+        display: z.enum(["card", "div"]).optional(),
     }),
     z.object({
         type: z.literal("number"),
@@ -220,8 +228,8 @@ export type FormSchema = z.ZodObject<{ [key: string]: InputSchema }>;
 
 export type Registry = Record<string, {
     component: Component;
-    props?: Record<string, (def: z.ZodTypeDef, meta: InputMeta, model: Ref<any>, field: InputSchema, fieldKey: string) => any>;
-    events?: Record<string, (def: z.ZodTypeDef, meta: InputMeta, model: Ref<any>, field: InputSchema, fieldKey: string) => Function>;
+    props?: Record<string, (options: {def: z.ZodTypeDef, meta: InputMeta, model: Ref<any>, field: InputSchema, fieldKey: string}) => any>;
+    events?: Record<string, (options: {def: z.ZodTypeDef, meta: InputMeta, model: Ref<any>, field: InputSchema, fieldKey: string}) => Function>;
 }>;
 
 export type Step = {

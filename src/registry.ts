@@ -19,126 +19,130 @@ export const defaultRegistry: Registry = {
     text: {
         component: CustomInput,
         props: {
-            type: (def, meta, model) => "text",
-            minlength: (def, meta, model) => (def as z.ZodStringDef).checks?.find(c => c.kind === 'min')?.value,
-            maxlength: (def, meta, model) => (def as z.ZodStringDef).checks?.find(c => c.kind === 'max')?.value,
+            type: () => "text",
+            minlength: ({ def }) => (def as z.ZodStringDef).checks?.find(c => c.kind === 'min')?.value,
+            maxlength: ({ def }) => (def as z.ZodStringDef).checks?.find(c => c.kind === 'max')?.value,
         }
     },
     url: {
         component: CustomInput,
         props: {
-            type: (def, meta, model) => "url",
-            minlength: (def, meta, model) => (def as z.ZodStringDef).checks?.find(c => c.kind === 'min')?.value,
-            maxlength: (def, meta, model) => (def as z.ZodStringDef).checks?.find(c => c.kind === 'max')?.value,
+            type: () => "url",
+            minlength: ({ def }) => (def as z.ZodStringDef).checks?.find(c => c.kind === 'min')?.value,
+            maxlength: ({ def }) => (def as z.ZodStringDef).checks?.find(c => c.kind === 'max')?.value,
         }
     },
     tel: {
         component: CustomInput,
         props: {
-            type: (def, meta, model) => "tel",
-            minlength: (def, meta, model) => (def as z.ZodStringDef).checks?.find(c => c.kind === 'min')?.value,
-            maxlength: (def, meta, model) => (def as z.ZodStringDef).checks?.find(c => c.kind === 'max')?.value,
+            type: () => "tel",
+            minlength: ({ def }) => (def as z.ZodStringDef).checks?.find(c => c.kind === 'min')?.value,
+            maxlength: ({ def }) => (def as z.ZodStringDef).checks?.find(c => c.kind === 'max')?.value,
         }
     },
     email: {
         component: CustomInput,
         props: {
-            type: (def, meta, model) => "email",
-            minlength: (def, meta, model) => (def as z.ZodStringDef).checks?.find(c => c.kind === 'min')?.value,
-            maxlength: (def, meta, model) => (def as z.ZodStringDef).checks?.find(c => c.kind === 'max')?.value,
+            type: () => "email",
+            minlength: ({ def }) => (def as z.ZodStringDef).checks?.find(c => c.kind === 'min')?.value,
+            maxlength: ({ def }) => (def as z.ZodStringDef).checks?.find(c => c.kind === 'max')?.value,
         }
     },
     password: {
         component: CustomInput,
         props: {
-            type: (def, meta, model) => "password",
-            minlength: (def, meta, model) => (def as z.ZodStringDef).checks?.find(c => c.kind === 'min')?.value,
-            maxlength: (def, meta, model) => (def as z.ZodStringDef).checks?.find(c => c.kind === 'max')?.value,
+            type: () => "password",
+            minlength: ({ def }) => (def as z.ZodStringDef).checks?.find(c => c.kind === 'min')?.value,
+            maxlength: ({ def }) => (def as z.ZodStringDef).checks?.find(c => c.kind === 'max')?.value,
         }
     },
     textarea: {
         component: Textarea,
         props: {
-            minlength: (def, meta, model) => (def as z.ZodStringDef).checks?.find(c => c.kind === 'min')?.value,
-            maxlength: (def, meta, model) => (def as z.ZodStringDef).checks?.find(c => c.kind === 'max')?.value,
+            minlength: ({ def }) => (def as z.ZodStringDef).checks?.find(c => c.kind === 'min')?.value,
+            maxlength: ({ def }) => (def as z.ZodStringDef).checks?.find(c => c.kind === 'max')?.value,
         }
     },
     checkbox: {
         component: CustomCheckbox,
         props: {
-            trueValue: (def, meta, model) => meta.type === "checkbox" ? meta.trueValue : undefined,
-            falseValue: (def, meta, model) => meta.type === "checkbox" ? meta.falseValue : undefined,
+            trueValue: ({ meta }) => meta.type === "checkbox" ? meta.trueValue : undefined,
+            falseValue: ({ meta }) => meta.type === "checkbox" ? meta.falseValue : undefined,
         },
     },
     switch: {
         component: CustomSwitch,
         props: {
-            trueValue: (def, meta, model) => meta.type === "switch" ? meta.trueValue : undefined,
-            falseValue: (def, meta, model) => meta.type === "switch" ? meta.falseValue : undefined,
+            trueValue: ({ meta }) => meta.type === "switch" ? meta.trueValue : undefined,
+            falseValue: ({ meta }) => meta.type === "switch" ? meta.falseValue : undefined,
         },
     },
     select: {
         component: ComboSelect,
         props: {
-            options: (def, meta, model) => meta.type === "select" ? meta.options : undefined,
-            multiple: (def, meta, model) => meta.type === "select" ? meta.multiple : undefined,
-            hideSearch: (def, meta, model) => meta.type === "select" ? meta.hideSearch : undefined,
+            options: ({ meta }) => meta.type === "select" ? meta.options : undefined,
+            multiple: ({ meta }) => meta.type === "select" ? meta.multiple : undefined,
+            hideSearch: ({ meta }) => meta.type === "select" ? meta.hideSearch : undefined,
         }
     },
     radio: {
         component: RadioInput,
         props: {
-            options: (def, meta, model) => meta.type === "radio" ? meta.options : undefined,
+            options: ({ meta }) => meta.type === "radio" ? meta.options : undefined,
         }
     },
     add: {
         component: FormInputList,
         props: {
-            fieldKey: (def, meta, model, field, fieldKey) => fieldKey,
-            field: (def, meta, model, field, fieldKey) => field,
-            elementClass: (def, meta, model) => meta.type === "add" ? meta.elementClass : undefined,
+            fieldKey: ({ fieldKey }) => fieldKey,
+            field: ({ field }) => field,
+            elementClass: ({ meta }) => meta.type === "add" ? meta.elementClass : undefined,
         }
     },
     search: {
         component: SearchInput,
         props: {
-            listQuery: (def, meta, model) => meta.type === "search" ? meta.listQuery : undefined,
-            getQuery: (def, meta, model) => meta.type === "search" ? (meta.getQuery || undefined) : undefined,
-            resultLabel: (def, meta, model) => meta.type === "search" ? (meta.resultLabel || undefined) : undefined,
+            listQuery: ({ meta }) => meta.type === "search" ? meta.listQuery : undefined,
+            getQuery: ({ meta }) => meta.type === "search" ? (meta.getQuery || undefined) : undefined,
+            resultLabel: ({ meta }) => meta.type === "search" ? (meta.resultLabel || undefined) : undefined,
         }
     },
     group: {
         component: FormInputGroup,
         props: {
-            fieldKey: (def, meta, model, field, fieldKey) => fieldKey,
-            field: (def, meta, model, field, fieldKey) => field,
+            fieldKey: ({ fieldKey }) => fieldKey,
+            field: ({ field }) => field,
+            display: ({ meta }) => meta.type === "group" ? meta.display : undefined,
         }
     },
     date: {
         component: DateInput,
+        props: {
+            yearRange: ({ meta }) => meta.type === "date" ? meta.yearRange : undefined,
+        }
     },
     number: {
         component: NumberInput,
         props: {
-            min: (def, meta, model) => (def as z.ZodNumberDef).checks?.find(c => c.kind === 'min')?.value,
-            max: (def, meta, model) => (def as z.ZodNumberDef).checks?.find(c => c.kind === 'max')?.value,
+            min: ({ def }) => (def as z.ZodNumberDef).checks?.find(c => c.kind === 'min')?.value,
+            max: ({ def }) => (def as z.ZodNumberDef).checks?.find(c => c.kind === 'max')?.value,
         }
     },
     range: {
         component: FormRange,
         props: {
-            min: (def, meta, model) => (def as z.ZodNumberDef).checks?.find(c => c.kind === 'min')?.value,
-            max: (def, meta, model) => (def as z.ZodNumberDef).checks?.find(c => c.kind === 'max')?.value,
-            step: (def, meta, model) => (def as z.ZodNumberDef).checks?.find(c => c.kind === 'multipleOf')?.value,
+            min: ({ def }) => (def as z.ZodNumberDef).checks?.find(c => c.kind === 'min')?.value,
+            max: ({ def }) => (def as z.ZodNumberDef).checks?.find(c => c.kind === 'max')?.value,
+            step: ({ def }) => (def as z.ZodNumberDef).checks?.find(c => c.kind === 'multipleOf')?.value,
         }
     },
     rating: {
         component: Rating,
         props: {
-            icon: (def, meta, model) => meta.type === "rating" ? meta.icon : undefined,
-            min: (def, meta, model) => (def as z.ZodNumberDef).checks?.find(c => c.kind === 'min')?.value,
-            max: (def, meta, model) => (def as z.ZodNumberDef).checks?.find(c => c.kind === 'max')?.value,
-            step: (def, meta, model) => (def as z.ZodNumberDef).checks?.find(c => c.kind === 'multipleOf')?.value,
+            icon: ({ meta }) => meta.type === "rating" ? meta.icon : undefined,
+            min: ({ def }) => (def as z.ZodNumberDef).checks?.find(c => c.kind === 'min')?.value,
+            max: ({ def }) => (def as z.ZodNumberDef).checks?.find(c => c.kind === 'max')?.value,
+            step: ({ def }) => (def as z.ZodNumberDef).checks?.find(c => c.kind === 'multipleOf')?.value,
         }
     },
     tags: {

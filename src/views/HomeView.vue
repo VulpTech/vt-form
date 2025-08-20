@@ -104,7 +104,6 @@ const schema = z.object({
             label: "text",
             description: "description",
             type: "text",
-            initial: "",
             placeholder: "placeholder",
             tooltip: "tooltip",
         }),
@@ -112,24 +111,14 @@ const schema = z.object({
             label: "date",
             description: "description",
             type: "date",
-            initial: "",
             tooltip: "tooltip",
         }),
-    }).array(), {
+    }).array().max(2), {
         label: "add",
         description: "Max 2 elements",
         type: "add",
-        // initial: [
-        //     {
-        //         text: "",
-        //         date: "",
-        //     },
-        //     {
-        //         text: "",
-        //         date: "",
-        //     },
-        // ],
-        tooltip: "tooltip"
+        tooltip: "tooltip",
+        // elementClass: "!grid-cols-1"
     }),
     number: formField(z.number().int().min(1).max(5), {
         label: "number",
@@ -142,6 +131,7 @@ const schema = z.object({
         description: "description",
         type: "date",
         tooltip: "tooltip",
+        yearRange: [-100, 0],
     }),
     password: formField(z.string(), {
         label: "password",
@@ -194,6 +184,27 @@ const schema = z.object({
         initial: "title",
         tooltip: "tooltip",
     }),
+    divGroup: formField(z.object({
+        url: formField(z.string().url(), {
+            label: "url",
+            description: "description",
+            type: "url",
+            placeholder: "placeholder",
+            tooltip: "tooltip",
+        }),
+        number: formField(z.number().int().min(1).max(5), {
+            label: "number",
+            description: "Must be between 1 & 5",
+            type: "number",
+            tooltip: "tooltip",
+        }),
+    }), {
+        label: "div group",
+        description: "description",
+        type: "group",
+        tooltip: "tooltip",
+        display: "div",
+    }),
 });
 
 // user-provided component registry
@@ -201,7 +212,7 @@ const registry: Registry = {
     custom: {
         component: MyComponent,
         props: {
-            title: (def, meta, model) => model.value,
+            title: ({ model }) => model.value,
         },
     },
 };
@@ -217,7 +228,7 @@ const { formData, formErrors, error, isValid, visited, formState } = useVtForm(s
 </script>
 
 <template>
-    <FormBuilder v-model="formData" :schema="schema" :registry="registry" class="grid grid-cols-2 gap-3" />
+    <FormBuilder v-model="formData" :schema="schema" :registry="registry" class="grid grid-cols-1 md:grid-cols-2 gap-3" />
     <Button :disabled="!isValid">Submit</Button>
     <!-- <pre>formState: {{ formState }}</pre> -->
     <!-- <pre>visited: {{ visited }}</pre> -->

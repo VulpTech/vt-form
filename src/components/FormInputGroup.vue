@@ -9,13 +9,16 @@ import type { InputSchema, Registry } from "@/types";
 
 type ObjectGroupSchema = z.ZodObject<{[key: string]: InputSchema}>;
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     fieldKey?: string;
     field: InputSchema<ObjectGroupSchema> | ObjectGroupSchema;
     fieldPath: string;
     registry?: Registry;
+    display?: "card" | "div";
     class?: HTMLAttributes["class"];
-}>();
+}>(), {
+    display: "card",
+});
 
 const shape = getZodSchema(props.field).shape;
 const nonHiddenKeys = Object.keys(shape).filter(k => shape[k].metadata.type !== "hidden");
@@ -54,21 +57,22 @@ watch(model, (newValue) => {
 </script>
 
 <template>
-    <Card :class="cn('grow p-6 grid grid-cols-2 gap-2', props.class)">
+    <component
+        :is="props.display === 'card' ? Card : 'div'"
+        :class="cn('grow relative grid grid-cols-1 md:grid-cols-2 gap-3', props.display === 'card' ? 'p-4' : '', !!$slots.default ? '!pt-8' : '', props.class)"
+    >
+        <div v-if="!!$slots.default" class="absolute top-0 right-0 p-2">
+            <slot />
+        </div>
         <template v-for="(f, k) in shape" :key="k">
-            <div
+            <FormInput
                 v-if="f.metadata.type !== 'hidden'"
-                :class="f.metadata?.class"
-                :style="f.metadata?.style"
-            >
-                <FormInput
-                    :fieldKey="(k as string)"
-                    :field="f"
-                    :fieldPath="`${props.fieldPath}.${(k as string)}`"
-                    v-model="data[k]"
-                    :registry="props.registry"
-                />
-            </div>
+                :fieldKey="(k as string)"
+                :field="f"
+                :fieldPath="`${props.fieldPath}.${(k as string)}`"
+                v-model="data[k]"
+                :registry="props.registry"
+            />
         </template>
-    </Card>
+    </component>
 </template>

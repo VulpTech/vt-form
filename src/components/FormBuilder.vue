@@ -46,14 +46,14 @@ if (props.steps) {
                 :orientation="props.steps.orientation"
                 :linear="props.steps.linear ?? false"
                 v-slot="{ nextStep, prevStep, isFirstStep, isLastStep }"
-                :class="cn('flex flex-col gap-2 pt-1 w-full', props.steps.orientation === 'horizontal' ? '' : 'pl-1', props.class)"
+                :class="cn('flex flex-col gap-2 w-full', props.class)"
             >
-                <div :class="`flex ${props.steps.orientation === 'horizontal' ? 'flex-col items-center gap-4' : 'flex-row gap-8'}`">
-                    <div :class="`flex gap-4 ${props.steps.orientation === 'horizontal' ? 'w-full flex-row justify-around' : 'flex-col'}`">
-                        <StepperItem v-for="step, index in props.steps.steps" :step="index + 1" :key="index + 1" v-slot="{ state }" :class="`flex relative ${props.steps.orientation === 'horizontal' ? 'flex-col flex-1' : 'flex-row'}`">
+                <div :class="`flex p-2 ${props.steps.orientation === 'horizontal' ? 'flex-col items-center gap-4' : 'flex-row gap-6'}`">
+                    <div :class="`flex gap-4 pt-2 pl-2 ${props.steps.orientation === 'horizontal' ? 'w-full flex-row justify-around overflow-x-auto pr-2' : 'flex-col h-min w-full md:!w-auto md:sticky md:top-0'}`">
+                        <StepperItem v-for="step, index in props.steps.steps" :step="index + 1" :key="index + 1" v-slot="{ state }" :class="`flex relative ${props.steps.orientation === 'horizontal' ? 'flex-col flex-1 min-w-32' : 'flex-row items-start'}`">
                             <StepperSeparator
                                 v-if="index !== props.steps.steps.length - 1"
-                                :class="`absolute block shrink-0 rounded-full bg-muted group-data-[state=completed]:bg-primary ${props.steps.orientation === 'horizontal' ? 'left-[calc(50%+20px)] right-[calc(-50%+10px)] top-5 h-0.5' : 'left-[18px] top-[38px] h-[105%] w-0.5'}`"
+                                :class="`absolute block shrink-0 rounded-full bg-muted group-data-[state=completed]:bg-primary ${props.steps.orientation === 'horizontal' ? 'left-[calc(50%+20px)] right-[calc(-50%+10px)] top-5 h-0.5' : 'left-[17px] top-[38px] h-[105%] w-0.5'}`"
                             />
                             <StepperTrigger as-child>
                                 <Button
@@ -67,14 +67,37 @@ if (props.steps) {
                                     <X v-else class="size-5" />
                                 </Button>
                             </StepperTrigger>
-                            <div :class="`flex flex-col gap-1 ${props.steps.orientation === 'horizontal' ? 'items-center text-center' : 'max-w-3xs'}`">
-                                <StepperTitle :class="`text-sm font-semibold transition lg:text-base ${state === 'active' && 'text-primary'}`">
+                            <div :class="`flex flex-col gap-1 ${props.steps.orientation === 'horizontal' ? 'items-center text-center' : 'grow md:max-w-3xs'}`">
+                                <StepperTitle :class="`font-semibold mt-1 ${props.steps.orientation === 'vertical' ? '!text-wrap' : '!text-wrap'} transition ${state === 'active' && 'text-primary'}`">
                                     {{ step.label }}
                                 </StepperTitle>
+                                <div v-if="props.steps.orientation === 'vertical' && stepIndex - 1 === index" class="w-full md:hidden">
+                                    <div class="mb-3">
+                                        <p v-if="props.steps.steps[stepIndex - 1].description">{{ props.steps.steps[stepIndex - 1].description }}</p>
+                                    </div>
+                                    <div :class="props.steps.steps[stepIndex - 1].class">
+                                        <template v-for="(field, fieldKey) in (props.steps.steps[stepIndex - 1].shape)" :key="fieldKey">
+                                            <div
+                                                v-if="field.metadata"
+                                                :class="field.metadata?.class"
+                                                :style="field.metadata?.style"
+                                            >
+                                                <FormInput
+                                                    :fieldKey="(fieldKey as string)"
+                                                    :field="field"
+                                                    :fieldPath="(fieldKey as string)"
+                                                    v-model="model[fieldKey]"
+                                                    :disabled="disabled"
+                                                    :registry="props.registry"
+                                                />
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
                             </div>
                         </StepperItem>
                     </div>
-                    <div class="w-full">
+                    <div :class="`grow ${props.steps.orientation === 'vertical' ? 'hidden md:flex md:pt-2' : 'w-full'} flex-col`">
                         <div class="mb-4">
                             <h3 class="font-bold text-lg">{{ props.steps.steps[stepIndex - 1].label }}</h3>
                             <p v-if="props.steps.steps[stepIndex - 1].description">{{ props.steps.steps[stepIndex - 1].description }}</p>
@@ -99,11 +122,11 @@ if (props.steps) {
                         </div>
                     </div>
                 </div>
-                <div class="flex flex-row items-center justify-between w-full">
+                <div class="bg-background p-2 flex flex-row items-center justify-between w-full sticky bottom-0 z-40">
                     <div class="flex flex-row items-center gap-2">
                         <slot v-if="isFirstStep" name="left-buttons-first" />
                         <Button v-else variant="outline" @click="prevStep">
-                            <ChevronLeft class="size-4" /> Prev
+                            <ChevronLeft class="size-4" /><span class="hidden md:flex"> Prev</span>
                         </Button>
                         <slot name="left-buttons" />
                     </div>
@@ -113,7 +136,7 @@ if (props.steps) {
                             <slot name="right-buttons-last" />
                         </template>
                         <Button v-else variant="outline" @click="nextStep">
-                            Next <ChevronRight class="size-4" />
+                            <span class="hidden md:flex">Next </span><ChevronRight class="size-4" />
                         </Button>
                     </div>
                 </div>
@@ -122,7 +145,7 @@ if (props.steps) {
 
             </div>
         </template>
-        <div v-else :class="cn('', props.class)">
+        <div v-else :class="cn('p-2', props.class)">
             <template v-for="(field, fieldKey) in props.schema.shape" :key="fieldKey">
                 <div
                     v-if="field.metadata"
