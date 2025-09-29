@@ -1,7 +1,7 @@
-import { ref, computed, provide } from "vue";
+import { ref, computed, provide, readonly } from "vue";
 import * as z from "zod";
 import { schemaCreateEmptyObject } from "@/form";
-import { type FormSchema, InputSchema, type Step, type StepConfig, formErrorsKey, visitedKey } from "@/types";
+import { type FormSchema, InputSchema, type Step, type StepConfig, formErrorsKey, visitedKey, formDataKey } from "@/types";
 
 export default function useVtForm<T extends FormSchema>(schema: T, options?: {
     steps?: StepConfig;
@@ -12,6 +12,8 @@ export default function useVtForm<T extends FormSchema>(schema: T, options?: {
     const formData = ref<z.infer<typeof schema> | undefined>();
     const isValidating = ref<boolean>(false);
     const visited = ref<Record<string, boolean>>({});
+
+    provide(formDataKey, readonly(formData));
 
     function buildVisitedObj(shape: {[key: string]: InputSchema<z.ZodTypeAny>}, keyPrefix?: string) {
         Object.entries(shape).forEach(([key, val]) => {

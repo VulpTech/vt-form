@@ -1,4 +1,4 @@
-import type { Ref, Component, HTMLAttributes, InjectionKey, ComputedRef } from "vue";
+import type { Component, HTMLAttributes, InjectionKey, ComputedRef, DeepReadonly } from "vue";
 import * as z from "zod";
 
 export const optionSchema = z.object({
@@ -228,8 +228,8 @@ export type FormSchema = z.ZodObject<{ [key: string]: InputSchema }>;
 
 export type Registry = Record<string, {
     component: Component;
-    props?: Record<string, (options: {def: z.ZodTypeDef, meta: InputMeta, model: Ref<any>, field: InputSchema, fieldKey: string}) => any>;
-    events?: Record<string, (options: {def: z.ZodTypeDef, meta: InputMeta, model: Ref<any>, field: InputSchema, fieldKey: string}) => Function>;
+    props?: Record<string, (options: {def: z.ZodTypeDef, meta: InputMeta, model: DeepReadonly<z.infer<FormSchema> | undefined>, field: InputSchema, fieldKey: string}) => any>;
+    events?: Record<string, (options: {def: z.ZodTypeDef, meta: InputMeta, model: DeepReadonly<z.infer<FormSchema> | undefined>, field: InputSchema, fieldKey: string}) => Function>;
 }>;
 
 export type Step = {
@@ -261,3 +261,5 @@ export type FormError = Omit<z.ZodIssue, "path"> & { path: string };
 export const formErrorsKey = Symbol() as InjectionKey<ComputedRef<FormError[]>>;
 
 export const visitedKey = Symbol() as InjectionKey<(key: string, value?: -1 | 0 | 1) => boolean | void>;
+
+export const formDataKey = Symbol() as InjectionKey<DeepReadonly<z.infer<FormSchema> | undefined>>;
