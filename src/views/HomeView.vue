@@ -181,7 +181,7 @@ const schema = z.object({
         label: "custom",
         description: "description",
         type: "custom",
-        initial: "title",
+        initial: "title1",
         tooltip: "tooltip",
     }),
     divGroup: formField(z.object({
@@ -212,7 +212,7 @@ const registry: Registry = {
     custom: {
         component: MyComponent,
         props: {
-            title: ({ model }) => model.value,
+            title: ({ model }) => model.value.text === "text",
         },
     },
 };

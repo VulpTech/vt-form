@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { computed, type ComputedRef, inject, watchEffect } from "vue";
+import { computed, type ComputedRef, DeepReadonly, inject, watchEffect } from "vue";
 import * as z from "zod";
 import { CircleHelp } from "lucide-vue-next";
-import { formErrorsKey, type InputSchema, type Registry, type FormError, visitedKey } from "@/types";
+import { formErrorsKey, type InputSchema, type Registry, type FormError, visitedKey, formDataKey, FormSchema } from "@/types";
 import { getZodSchema } from "@/form";
 import { Label } from "@/components/ui/label";
 import CustomTooltip from "@/components/CustomTooltip.vue";
@@ -24,6 +24,7 @@ const required = !fieldUnwrapped.isOptional();
 
 const formErrors = inject(formErrorsKey) as ComputedRef<FormError[]>;
 const isVisited = inject(visitedKey) as (key: string, value?: -1 | 0 | 1) => boolean | void;
+const formData = inject(formDataKey) as DeepReadonly<z.infer<FormSchema> | undefined>;
 
 const model = defineModel<z.infer<typeof fieldUnwrapped>>();
 
@@ -40,7 +41,7 @@ const registryItem = computed(() => {
 const computedProps = computed(() => {
     if (registryItem.value.props) {
         return Object.entries(registryItem.value.props).reduce((obj, [key, fn]) => {
-            obj[key] = fn({ def: fieldDef, meta: fieldMeta, model, field: props.field, fieldKey: props.fieldKey });
+            obj[key] = fn({ def: fieldDef, meta: fieldMeta, model: formData, field: props.field, fieldKey: props.fieldKey });
             return obj;
         }, {} as Record<string, any>);
     } else {
@@ -51,7 +52,7 @@ const computedProps = computed(() => {
 const computedEvents = computed(() => {
     if (registryItem.value.events) {
         return Object.entries(registryItem.value.events).reduce((obj, [key, fn]) => {
-            obj[key] = fn({ def: fieldDef, meta: fieldMeta, model, field: props.field, fieldKey: props.fieldKey });
+            obj[key] = fn({ def: fieldDef, meta: fieldMeta, model: formData, field: props.field, fieldKey: props.fieldKey });
             return obj;
         }, {} as Record<string, any>);
     } else {
