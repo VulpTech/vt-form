@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, type HTMLAttributes } from "vue";
-import { Check, ChevronsUpDown, Search, X } from "lucide-vue-next";
+import { Check, ChevronsUpDown, Search, X } from "@lucide/vue";
 import { type AcceptableValue } from "reka-ui";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";

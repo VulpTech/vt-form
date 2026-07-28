@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { HTMLAttributes } from "vue";
-import { Star } from "lucide-vue-next";
+import { Star } from "@lucide/vue";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 

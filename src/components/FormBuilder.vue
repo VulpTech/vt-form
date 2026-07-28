@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { type HTMLAttributes, onMounted, ref, watch } from "vue";
 import * as z from "zod";
-import { Check, Circle, Dot, ChevronLeft, ChevronRight, X, CircleDashed } from "lucide-vue-next";
+import { Check, Circle, Dot, ChevronLeft, ChevronRight, X, CircleDashed } from "@lucide/vue";
 import { cn } from "@/lib/utils";
 import type { FormSchema, Registry, Step, StepConfig } from "@/types";
 import FormInput from "@/components/FormInput.vue";

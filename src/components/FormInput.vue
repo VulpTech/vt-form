@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, type ComputedRef, DeepReadonly, inject, watchEffect } from "vue";
 import * as z from "zod";
-import { CircleHelp } from "lucide-vue-next";
+import { CircleHelp } from "@lucide/vue";
 import { formErrorsKey, type InputSchema, type Registry, type FormError, visitedKey, formDataKey, FormSchema } from "@/types";
 import { getZodSchema } from "@/form";
 import { Label } from "@/components/ui/label";

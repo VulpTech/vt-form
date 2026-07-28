@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, inject, type HTMLAttributes } from "vue";
 import * as z from "zod";
-import { Trash } from "lucide-vue-next";
+import { Trash } from "@lucide/vue";
 import { visitedKey, type InputSchema, type Registry } from "@/types";
 import { getZodSchema } from "@/form";
 import FormInputGroup from "@/components/FormInputGroup.vue";

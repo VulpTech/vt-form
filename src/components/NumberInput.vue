@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { type HTMLAttributes } from "vue";
-import { X } from "lucide-vue-next";
+import { X } from "@lucide/vue";
 import { cn } from "@/lib/utils";
 import { NumberField, NumberFieldContent, NumberFieldDecrement, NumberFieldInput, NumberFieldIncrement } from "@/components/ui/number-field";
 import { Button } from "@/components/ui/button";
