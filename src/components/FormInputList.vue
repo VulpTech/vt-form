@@ -19,6 +19,7 @@ const props = defineProps<{
 
 const fieldUnwrapped = props.field.unwrap();
 const fieldSchema = getZodSchema(props.field);
+const fieldMeta = props.field.metadata;
 
 const model = defineModel<z.infer<typeof fieldUnwrapped>>();
 
@@ -83,7 +84,7 @@ function remove(index: number) {
 </script>
 
 <template>
-    <div :class="cn('flex flex-col flex-grow gap-3', props.class)">
+    <div :class="cn('flex flex-col grow gap-4', props.class)">
         <template v-if="model">
             <div v-for="(_, index) in model" :key="index" class="flex flex-row gap-3">
                 <FormInputGroup v-model="model[index]" :field="fieldSchema.element" :registry="props.registry" :fieldPath="`${props.fieldPath}.${index}`" :class="props.elementClass">
@@ -101,7 +102,7 @@ function remove(index: number) {
             </div>
         </template>
         <div v-if="canAdd">
-            <Button @click="add">+ Add</Button>
+            <Button @click="add">+ Add {{fieldMeta.label}}</Button>
         </div>
     </div>
 </template>

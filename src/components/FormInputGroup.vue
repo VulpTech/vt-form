@@ -59,7 +59,7 @@ watch(model, (newValue) => {
 <template>
     <component
         :is="props.display === 'card' ? Card : 'div'"
-        :class="cn('grow relative grid grid-cols-1 md:grid-cols-2 gap-3', props.display === 'card' ? 'p-4' : '', !!$slots.default ? '!pt-8' : '', props.class)"
+        :class="cn('grow relative grid grid-cols-1 md:grid-cols-2 gap-4', props.display === 'card' ? 'p-4' : '', !!$slots.default ? '!pt-8' : '', props.class)"
     >
         <div v-if="!!$slots.default" class="absolute top-0 right-0 p-2">
             <slot />
