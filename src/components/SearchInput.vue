@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, type HTMLAttributes, watch } from "vue";
-import { Search, X } from "lucide-vue-next";
+import { Search, X } from "@lucide/vue";
 import { useDebounceFn } from "@vueuse/core";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";

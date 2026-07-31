@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { type HTMLAttributes, ref, computed, watch, useTemplateRef } from "vue";
-import { X, Calendar as CalendarIcon } from "lucide-vue-next";
+import { X, Calendar as CalendarIcon } from "@lucide/vue";
 import { type CalendarDate, parseDate } from "@internationalized/date";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, type HTMLAttributes } from "vue";
-import { X, Eye, EyeOff } from "lucide-vue-next";
+import { X, Eye, EyeOff } from "@lucide/vue";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

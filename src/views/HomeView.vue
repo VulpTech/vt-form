@@ -228,7 +228,7 @@ const { formData, formErrors, error, isValid, visited, formState } = useVtForm(s
 </script>
 
 <template>
-    <FormBuilder v-model="formData" :schema="schema" :registry="registry" class="grid grid-cols-1 md:grid-cols-2 gap-3" />
+    <FormBuilder v-model="formData" :schema="schema" :registry="registry" class="grid grid-cols-1 md:grid-cols-2 gap-4" />
     <Button :disabled="!isValid">Submit</Button>
     <!-- <pre>formState: {{ formState }}</pre> -->
     <!-- <pre>visited: {{ visited }}</pre> -->

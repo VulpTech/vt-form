@@ -63,7 +63,7 @@ const schema = z.object({
             tooltip: "tooltip",
         }),
     }).array(), {
-        label: "add",
+        label: "item",
         description: "Max 2 elements",
         type: "add",
         initial: [
@@ -101,6 +101,9 @@ const stepsConfig: StepConfig = {
     type: "stepper",
     // orientation: "horizontal",
     orientation: "vertical",
+	numbered: true,
+	// descriptions: true,
+	linear: true,
     steps: [
         {
             id: "step1",
@@ -168,6 +171,11 @@ const { formData, formErrors, error, isValid, steps, visited } = useVtForm(schem
         <template #right-buttons-last>
             <Button :disabled="!isValid">Submit</Button>
         </template>
+	    <template #step-10-top="{data, nextStep}">
+		    TOP OF STEP 10
+		    <pre>{{data}}</pre>
+		    <Button @click="nextStep">Next</Button>
+	    </template>
     </FormBuilder>
     <!-- <pre>steps: {{ steps }}</pre>
     <pre>formData: {{ formData }}</pre>

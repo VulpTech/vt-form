@@ -248,6 +248,8 @@ type StepperStepConfig = BaseStepConfig & {
     type: "stepper";
     orientation?: "vertical" | "horizontal";
     linear?: boolean;
+    numbered?: boolean;
+    descriptions?: boolean;
 };
 
 type GroupStepConfig = BaseStepConfig & {

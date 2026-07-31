@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { type HTMLAttributes, ref } from "vue";
-import { X, Tags } from "lucide-vue-next";
+import { X, Tags } from "@lucide/vue";
 import { Button } from "@/components/ui/button";
 import { TagsInput, TagsInputInput, TagsInputItem, TagsInputItemDelete, TagsInputItemText } from "@/components/ui/tags-input";
 import { cn } from "@/lib/utils";

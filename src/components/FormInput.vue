@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, type ComputedRef, DeepReadonly, inject, watchEffect } from "vue";
 import * as z from "zod";
-import { CircleHelp } from "lucide-vue-next";
+import { CircleHelp } from "@lucide/vue";
 import { formErrorsKey, type InputSchema, type Registry, type FormError, visitedKey, formDataKey, FormSchema } from "@/types";
 import { getZodSchema } from "@/form";
 import { Label } from "@/components/ui/label";
@@ -77,9 +77,9 @@ watchEffect(() => {
 </script>
 
 <template>
-    <div v-if="fieldMeta.type !== 'hidden'" :class="cn('form-input flex flex-col gap-1', fieldMeta.class)">
-        <div :class="`flex gap-1 ${['checkbox', 'switch'].includes(fieldMeta.type) ? 'flex-row-reverse items-center justify-end' : 'flex-col'}`">
-            <div class="flex flex-row gap-1 items-center">
+    <div v-if="fieldMeta.type !== 'hidden'" :class="cn('form-input flex flex-col gap-2', fieldMeta.class)">
+        <div :class="`flex gap-2 ${['checkbox', 'switch'].includes(fieldMeta.type) ? 'flex-row-reverse items-center justify-end' : 'flex-col'}`">
+            <div class="flex flex-row gap-2 items-center">
                 <Label v-if="fieldMeta.label" :for="props.fieldKey">{{ fieldMeta.label }}<span v-if="required" class="text-destructive"> *</span></Label>
                 <CustomTooltip v-if="fieldMeta.tooltip">
                     <template #trigger><CircleHelp class="size-4" /></template>
